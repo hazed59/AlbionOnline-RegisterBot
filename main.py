@@ -38,17 +38,15 @@ async def setup(ctx, botPrefix, guildID, allianceID):
     # Create cursor
     cur = con.cursor()
 
+    # Se pone "f" delante para que se reconozca las {} como variables
     # Crear tabla de la configuración de la guild
-    # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, allianceId text)""")
-    cur.execute(f"""CREATE TABLE IF NOT EXISTS config (botPrefix text, guildId text, allianceId text)""")
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, allianceId text)""")
 
     # Insertar datos en la tabla
-    # cur.execute(f"""insert into {table_config} (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
-    cur.execute(f"""insert into config (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
+    cur.execute(f"""insert into {table_config} (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
 
     # Crear tabla de usuarios registrados de la guild
-    # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text)""")
-    cur.execute(f"""CREATE TABLE IF NOT EXISTS user (userid text, albionnick text)""")
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text)""")
     
     # Guardar cambios
     con.commit()
