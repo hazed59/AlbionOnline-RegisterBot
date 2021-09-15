@@ -28,6 +28,8 @@ python main.py
 
 ## TODO
 
+ - Change nickname on Discord adding tag before nick
+
  - Store registered users in BD
 
  - Ask for rol to give to guild members
