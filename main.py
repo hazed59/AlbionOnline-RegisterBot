@@ -46,6 +46,7 @@ async def register(ctx, arg):
     embebInfo = discord.Embed(title="Procesando búsqueda en la guild", color=0xFFA500)
     embebInfo.add_field(name="Buscando a:", value="{}".format(arg), inline=False)
     embebInfo.add_field(name="Tiempo estimado", value="5 minutos", inline=False)
+    embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
     # Mensaje embebido avisando
     await ctx.send(embed=embebInfo)
 
@@ -85,11 +86,17 @@ async def register(ctx, arg):
                     embebFindGuild = discord.Embed(title="Jugador encontrado", color=0x00ff00)
                     embebFindGuild.add_field(name="Bievenid@:", value="{}".format(arg), inline=False)
                     embebFindGuild.add_field(name="Rol asignado:", value="{}".format(guildRol), inline=False)
+                    embebFindGuild.add_field(name="Nick actualizado a:", value="{}".format(player['Name']), inline=False)
+                    embebFindGuild.set_footer(text="Bot creado por: QueenMirna#9103")
                     # Mensaje embebido avisando
                     await ctx.send(embed=embebFindGuild)
 
                     # Asignar rol
                     await member.add_roles(guildRolID)
+
+                    # Cambiar nombre
+                    await member.edit(nick="{}".format(player['Name']))
+
                     # Falta añádir cambiar el nombre
                     break
                 
@@ -100,30 +107,37 @@ async def register(ctx, arg):
                     embebFindAlliance = discord.Embed(title="Jugador encontrado", color=0x8c004b)
                     embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(arg), inline=False)
                     embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(allianceRol), inline=False)
+                    embebFindAlliance.add_field(name="Nick actualizado a:", value="{}".format(player['Name']), inline=False)
+                    embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
                     # Mensaje embebido avisando
                     await ctx.send(embed=embebFindAlliance)
 
                     # Asignar rol
                     await member.add_roles(allianceRol)
-                    # Falta añádir cambiar el nombre
+
+                    # Cambiar nombre
+                    await member.edit(nick="{}".format(player['Name']))
+
                     break
 
                 # Si no existe un jugador con ese nombre, puede que sea incompleto o existan varios, pero no coincide ninguno
                 if not exist:
                         # Mensaje embebido
-                        embebFindAlliance = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
-                        embebFindAlliance.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+                        embebNotFound = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
+                        embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+                        embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
                         # Mensaje embebido avisando
-                        await ctx.send(embed=embebFindAlliance)
+                        await ctx.send(embed=embebNotFound)
                         break
         
         # No existe ningún jugador con ese nombre, NO devuelve resultados la lista
         else:
             # Mensaje embebido
-            embebFindAlliance = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
-            embebFindAlliance.add_field(name="El jugador:", value="{}\n\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+            embebNotFound = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
+            embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+            embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
-            await ctx.send(embed=embebFindAlliance)
+            await ctx.send(embed=embebNotFound)
     
     # La API no está disponible
     else:
