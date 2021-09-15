@@ -13,3 +13,4 @@ python main.py
 Store registered users in BD
 Ask for rol to give to guild members
 Ask for rol to give to alliance members
+Cleanup of users if the arent any more on the guild or alliance
