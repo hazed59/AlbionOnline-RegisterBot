@@ -43,8 +43,11 @@ async def register(ctx, arg):
     guildRolID = discord.utils.get(member.guild.roles, name="{}".format(guildRol))
     allianceRolID = discord.utils.get(member.guild.roles, name="{}".format(allianceRol))
 
-    # Comando avisando que se está realizando la acción
-    await ctx.send("Buscando a {} en la guild, esto puede tardar hasta 5 minutos, se paciente.".format(arg))
+    embebInfo = discord.Embed(title="Procesando búsqueda en la guild", color=0xFFA500)
+    embebInfo.add_field(name="Buscando a:", value="{}".format(arg), inline=False)
+    embebInfo.add_field(name="Tiempo estimado", value="5 minutos", inline=False)
+    # Mensaje embebido avisando
+    await ctx.send(embed=embebInfo)
 
     # # Petición a la url, y guarda la respuesta
     # API que se usará, con parametrización del usuario
@@ -72,35 +75,63 @@ async def register(ctx, arg):
         if data_json.get('players'):
 
             for player in data_json['players']:
-            
+                
+                # INFO - Guild
                 # Si player es igual al nombre del jugador pasado devolver datos
                 if player['Name'].lower() == arg.lower() and player["GuildId"].lower() == guildID.lower():
                     exist = True
-                    await ctx.send("Has sido encontrado en el gremio {}, se te acaba de asignar el rol, bienvenido al gremio ".format(player["GuildName"]))
-                    await member.add_roles(guildRolID)
-                    # Falta añádir que le de el rol y le cambie el nombre
-                    # Añadir que le rol o nombre si es clan o alianza
-                    break
 
+                    # Mensaje embebido
+                    embebFindGuild = discord.Embed(title="Jugador encontrado", color=0x00ff00)
+                    embebFindGuild.add_field(name="Bievenid@:", value="{}".format(arg), inline=False)
+                    embebFindGuild.add_field(name="Rol asignado:", value="{}".format(guildRol), inline=False)
+                    # Mensaje embebido avisando
+                    await ctx.send(embed=embebFindGuild)
+
+                    # Asignar rol
+                    await member.add_roles(guildRolID)
+                    # Falta añádir cambiar el nombre
+                    break
+                
+                # INFO - Alliance
                 if player['Name'].lower() == arg.lower() and player["AllianceId"].lower() == allianceID.lower():
                     exist = True
-                    await ctx.send("{}".format(player["AllianceName"]))
-                    # Falta añádir que le de el rol y le cambie el nombre
-                    # Añadir que le rol o nombre si es clan o alianza
+                    # Mensaje embebido
+                    embebFindAlliance = discord.Embed(title="Jugador encontrado", color=0x8c004b)
+                    embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(arg), inline=False)
+                    embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(allianceRol), inline=False)
+                    # Mensaje embebido avisando
+                    await ctx.send(embed=embebFindAlliance)
+
+                    # Asignar rol
+                    await member.add_roles(allianceRol)
+                    # Falta añádir cambiar el nombre
                     break
 
                 # Si no existe un jugador con ese nombre, puede que sea incompleto o existan varios, pero no coincide ninguno
                 if not exist:
-                        await ctx.send("No existe el jugador {}, verifica que el nombre sea igual que en el juego.".format(arg))
+                        # Mensaje embebido
+                        embebFindAlliance = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
+                        embebFindAlliance.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+                        # Mensaje embebido avisando
+                        await ctx.send(embed=embebFindAlliance)
+                        break
         
         # No existe ningún jugador con ese nombre, NO devuelve resultados la lista
         else:
-            await ctx.send("No existe el jugador {}, verifica que el nombre sea igual que en el juego, incluyendo mayúsculas y minúsculas.".format(arg))
+            # Mensaje embebido
+            embebFindAlliance = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
+            embebFindAlliance.add_field(name="El jugador:", value="{}\n\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+            # Mensaje embebido avisando
+            await ctx.send(embed=embebFindAlliance)
     
     # La API no está disponible
     else:
-        await ctx.send("La API no está disponible por el siguiente error: {}".format(response.status_code))
-
+        # Mensaje embebido
+        embebFindAlliance = discord.Embed(title="La API no está disponible", color=0xFF0000)
+        embebFindAlliance.add_field(name="Error:", value="{}".format(response.status_code), inline=False)
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebFindAlliance)
 
 # Token del bot a usar
 bot.run(TOKEN)
