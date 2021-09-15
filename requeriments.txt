@@ -1,3 +1,4 @@
 requests
 nextcord
 discord
+python-dotenv
