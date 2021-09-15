@@ -20,7 +20,7 @@ Those will be the permissions that the bot will have
 
 ### Link
 
-<https://discord.com/oauth2/authorize?client_id=CLIENT_ID_HERE&scope=bot&permissions=469847040>
+<https://discord.com/oauth2/authorize?client_id=INSERT_CLIENT_ID_HERE&scope=bot&permissions=2617338880>
 
 ## Executing the bot
 

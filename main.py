@@ -22,6 +22,40 @@ async def on_ready():
     # Mensaje mostrando que está iniciado
     print('Logged in as {0.user}'.format(bot))
 
+@bot.command(pass_context=True)
+# Check if have admin perms
+@commands.has_permissions(administrator=True)
+async def setup(ctx, botPrefix, guildID, allianceID):
+
+    # Guardar la ID de la guild
+    DiscordGuildID = ctx.message.guild.id
+    table_users = "{}user".format(DiscordGuildID)
+    table_config = "{}config".format(DiscordGuildID)
+
+    # Conectar a la base de datos, se creará si no existe
+    con = sqlite3.connect('example.db')
+
+    # Create cursor
+    cur = con.cursor()
+
+    # Crear tabla de la configuración de la guild
+    # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, allianceId text)""")
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS config (botPrefix text, guildId text, allianceId text)""")
+
+    # Insertar datos en la tabla
+    # cur.execute(f"""insert into {table_config} (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
+    cur.execute(f"""insert into config (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
+
+    # Crear tabla de usuarios registrados de la guild
+    # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text)""")
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS user (userid text, albionnick text)""")
+    
+    # Guardar cambios
+    con.commit()
+
+    # Cerrar conexión
+    con.close()
+
 # !register ARGUMENTO
 @bot.command()
 async def register(ctx, arg):
