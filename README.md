@@ -31,13 +31,13 @@ python main.py
 - Create Database and table
 - Setup command
   - Ask
-    - Bot prefix
-    - Guild ID
-    - Alliance ID
-    - Guild Rol ID
-    - Alliance Rol ID
+    - Bot prefix (DONE)
+    - Guild ID (DONE)
+    - Alliance ID (DONE)
+    - Guild Rol ID (DONE)
+    - Alliance Rol ID (DONE)
       - If empty use api alliance tag
-  - Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName)
+  - Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
   - Save values in Database
 - Register command
   - Check if user its already registered
@@ -45,7 +45,7 @@ python main.py
   - Change nickname
   - Store in guild database
 - Cleanup of users if the arent any more on the guild or alliance
-- Command timeouts
+- Command timeouts (DONE)
 
 ### TODO Later
 
