@@ -127,7 +127,10 @@ async def setup(ctx, botPrefix, guildID, allianceID):
             await ctx.send("Terminado tiempo de espera, configuración cancelada")
 
 # !register ARGUMENTO
-@bot.command()
+@bot.command(
+    brief="Register user on the guild.",
+    help="Register your user.\nExameple: !register QueenMirna"
+)
 async def register(ctx, username):
 
     # Obtiene el ID del autor del mensaje
