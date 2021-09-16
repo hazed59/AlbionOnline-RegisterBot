@@ -34,18 +34,19 @@ python main.py
     - Bot prefix (DONE)
     - Guild ID (DONE)
     - Alliance ID (DONE)
-    - Guild Rol ID (DONE)
+    - Guild Rol ID (Una vez hecho este cambio, aplicarlo en !register al añadir el rol)
     - Alliance Rol ID (DONE)
-      - If empty use api alliance tag
   - Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
-  - Save values in Database
+  - Save values in Database (DONE)
 - Register command
   - Check if user its already registered
-  - Add role
-  - Change nickname
+  - Add role (PARTIALL, waiting for changes at !setup)
+  - Change nickname (DONE)
   - Store in guild database
 - Cleanup of users if the arent any more on the guild or alliance
 - Command timeouts (DONE)
+- Unregister command (Para usuarios)
+- forceUnregister command (Unregister user, para los que tengan permisos de adminstrar roles)
 
 ### TODO Later
 

@@ -324,7 +324,7 @@ async def setup(ctx):
                 cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, guildTagString text, guildRol text, allianceId text, allianceTagString text, allianceRol text)""")
 
                 # Insertar datos en la tabla
-                cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) values (?, ?, ?, ?, ?, ?)""", (botPrefix, guildId, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol))
+                cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) values (?, ?, ?, ?, ?, ?, ?)""", (botPrefix, guildId, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol))
 
                 # Crear tabla de usuarios registrados de la guild
                 cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text);""")
@@ -344,27 +344,27 @@ async def setup(ctx):
 
 # !register ARGUMENTO
 @bot.command(
+    pass_context=True,
     brief="Register user on the guild.",
     help="Register your user.\nExameple: !register QueenMirna"
 )
 async def register(ctx, username):
 
+    con = sqlite3.connect('example.db')
+
+    cur = con.cursor()
+
+    registerGuildId = cur.execute('SELECT guildId FROM DiscordServersConfig').fetchall()[0][0]
+    registerGuildTag = cur.execute('SELECT guildTagString FROM DiscordServersConfig').fetchall()[0][0]
+    registerGuildRol = cur.execute('SELECT guildRol FROM DiscordServersConfig').fetchall()[0][0]
+    registerAllianceId = cur.execute('SELECT allianceId FROM DiscordServersConfig').fetchall()[0][0]
+    registerAllianceTag = cur.execute('SELECT allianceTagString FROM DiscordServersConfig').fetchall()[0][0]
+    registerAllianceRol = cur.execute('SELECT allianceRol FROM DiscordServersConfig').fetchall()[0][0]
+
+    con.close()
+
     # Obtiene el ID del autor del mensaje
     member = ctx.message.author
-
-    # Variables Albion Online
-    # ID de la guild
-    guildID = "w8ofVhjvQWOB3xCczo4szQ"
-    # ID de la alianza
-    allianceID = "hRqowi9bTw6o44R0bsmIUw"
-
-    # Variables roles Discord
-    guildRol = "Member"
-    allianceRol = "Officer"
-
-    # ID de los roles
-    guildRolID = discord.utils.get(member.guild.roles, name="{}".format(guildRol))
-    allianceRolID = discord.utils.get(member.guild.roles, name="{}".format(allianceRol))
 
     embebInfo = discord.Embed(title="Procesando búsqueda en la guild", color=0xFFA500)
     embebInfo.add_field(name="Buscando a:", value="{}".format(username), inline=False)
@@ -378,22 +378,10 @@ async def register(ctx, username):
     url = 'https://gameinfo.albiononline.com/api/gameinfo/search?q={}'.format(username)
     response = requests.get(url)
 
-    # Devuelve la URL y el formato final no es un salto de linea, si no un espacio y se unen dos prints
-    # Quedando -> https://gameinfo.albiononline.com/api/gameinfo/search?q=Queenmirna  200
-    # print("{}".format(url), end =" ")
-
     if response.status_code == 200:
         # Transforma la info en texto plano a json
         data_json = json.loads(response.text)
         exist = False
-
-        ## DEBUG
-        # # Muestra la info en texto plano
-        # print("{}".format(response.text))
-
-        # print(data_json)
-        # print(json.dumps(data_json['players'], indent=4))
-        ## DEBUG
 
         # Si players existe en data_json
         if data_json.get('players'):
@@ -402,44 +390,47 @@ async def register(ctx, username):
                 
                 # INFO - Guild
                 # Si player es igual al nombre del jugador pasado devolver datos
-                if player['Name'].lower() == username.lower() and player["GuildId"].lower() == guildID.lower():
+                if player['Name'].lower() == username.lower() and player["GuildId"] == registerGuildId:
                     exist = True
 
                     # Mensaje embebido
                     embebFindGuild = discord.Embed(title="Jugador encontrado", color=0x00ff00)
                     embebFindGuild.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
-                    embebFindGuild.add_field(name="Rol asignado:", value="{}".format(guildRol), inline=False)
-                    embebFindGuild.add_field(name="Nick actualizado a:", value="{}".format(player['Name']), inline=False)
+                    embebFindGuild.add_field(name="Rol asignado:", value="{}".format(registerGuildRol), inline=False)
+                    embebFindGuild.add_field(name="Nick actualizado a:", value="[{}] {}".format(registerGuildTag ,player['Name']), inline=False)
                     embebFindGuild.set_footer(text="Bot creado por: QueenMirna#9103")
                     # Mensaje embebido avisando
                     await ctx.send(embed=embebFindGuild)
 
                     # Asignar rol
-                    await member.add_roles(guildRolID)
+                    DiscordGuildID = bot.get_guild(ctx.message.guild.id)
+                    role = discord.utils.get(DiscordGuildID.roles, name="{}".format(registerGuildRol))
+                    await member.add_roles(role)
 
                     # Cambiar nombre
-                    await member.edit(nick="{}".format(player['Name']))
+                    await member.edit(nick="[{}] {}".format(registerGuildTag ,player['Name']))
 
-                    # Falta añádir cambiar el nombre
                     break
                 
                 # INFO - Alliance
-                if player['Name'].lower() == username.lower() and player["AllianceId"].lower() == allianceID.lower():
+                if player['Name'].lower() == username.lower() and player["AllianceId"] == registerAllianceId:
                     exist = True
                     # Mensaje embebido
                     embebFindAlliance = discord.Embed(title="Jugador encontrado", color=0x8c004b)
                     embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
-                    embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(allianceRol), inline=False)
-                    embebFindAlliance.add_field(name="Nick actualizado a:", value="{}".format(player['Name']), inline=False)
+                    embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(registerAllianceRol), inline=False)
+                    embebFindAlliance.add_field(name="Nick actualizado a:", value="[{}] {}".format(registerAllianceTag ,player['Name']), inline=False)
                     embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
                     # Mensaje embebido avisando
                     await ctx.send(embed=embebFindAlliance)
 
                     # Asignar rol
-                    await member.add_roles(allianceRol)
+                    DiscordGuildID = bot.get_guild(ctx.message.guild.id)
+                    role = discord.utils.get(DiscordGuildID.roles, name="{}".format(registerAllianceRol))
+                    await member.add_roles(role)
 
                     # Cambiar nombre
-                    await member.edit(nick="{}".format(player['Name']))
+                    await member.edit(nick="[{}] {}".format(registerAllianceTag ,player['Name']))
 
                     break
 
