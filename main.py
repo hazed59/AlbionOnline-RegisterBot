@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 import requests
 import json
+import asyncio
 
 # Load env variables file
 load_dotenv()
@@ -22,7 +23,11 @@ async def on_ready():
     # Mensaje mostrando que está iniciado
     print('Logged in as {0.user}'.format(bot))
 
-@bot.command(pass_context=True)
+@bot.command(
+    pass_context=True,
+    brief="Initial bot setup.",
+    help="Configure bot prefix, GuildID and AllianceID.\nExameple: !setup ! w8ofVhjvQWOB3xCczo4szQ hRqowi9bTw6o44R0bsmIUw\nThis will config bot to use '!' as prefix, use 'w8ofVhjvQWOB3xCczo4szQ' as guild ID and 'hRqowi9bTw6o44R0bsmIUw' as allianceID"
+)
 # Check if have admin perms
 @commands.has_permissions(administrator=True)
 async def setup(ctx, botPrefix, guildID, allianceID):
@@ -32,31 +37,98 @@ async def setup(ctx, botPrefix, guildID, allianceID):
     table_users = "{}user".format(DiscordGuildID)
     table_config = "{}config".format(DiscordGuildID)
 
-    # Conectar a la base de datos, se creará si no existe
-    con = sqlite3.connect('example.db')
+    setupInfo = discord.Embed(title="Procesando búsqueda en la guild", color=0xFFA500)
+    setupInfo.add_field(name="Buscando guild ID:", value="{}".format(guildID), inline=False)
+    setupInfo.add_field(name="Buscando alliance ID:", value="{}".format(allianceID), inline=False)
+    setupInfo.set_footer(text="Bot creado por: QueenMirna#9103")
+    # Mensaje embebido avisando
+    await ctx.send(embed=setupInfo)
 
-    # Create cursor
-    cur = con.cursor()
+    guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/guilds/{}'.format(guildID)
+    guildResponse = requests.get(guildUrl)
 
-    # Se pone "f" delante para que se reconozca las {} como variables
-    # Crear tabla de la configuración de la guild
-    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, allianceId text)""")
+    try:
+        guild_data_json = json.loads(guildResponse.text)
+        guildExist = "OK"
+    except:
+        # Mensaje embebido
+        embebErrorGuild = discord.Embed(title="ID de guild no encontrado", color=0xFF0000)
+        embebErrorGuild.add_field(name="Info:", value="Compruba que el ID de la guild {} es correcto".format(guildID), inline=False)
+        embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebErrorGuild)
+        guildExist = "KO"
 
-    # Insertar datos en la tabla
-    cur.execute(f"""insert into {table_config} (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
+    allianceUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceID)
+    allianceResponse = requests.get(allianceUrl)
 
-    # Crear tabla de usuarios registrados de la guild
-    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text)""")
-    
-    # Guardar cambios
-    con.commit()
+    try:
+        alliance_data_json = json.loads(allianceResponse.text)
+        allianceExist = "OK"
+    except:
+        # Mensaje embebido
+        embebErrorAlliance = discord.Embed(title="ID de allianza no encontrada", color=0xFF0000)
+        embebErrorAlliance.add_field(name="Info:", value="Compruba que el ID de la allianza {} es correcto".format(guildID), inline=False)
+        embebErrorAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebErrorAlliance)
+        allianceExist = "KO"
 
-    # Cerrar conexión
-    con.close()
+    if guildExist != "KO" and allianceExist != "KO":
+        # Mensaje embebido
+        embebFindGuild = discord.Embed(title="Confirma que los valores son correctos", color=0x00ff00)
+        embebFindGuild.add_field(name="Prefijo del bot:", value="{}".format(botPrefix), inline=False)
+        embebFindGuild.add_field(name="Nombre del gremio:", value="{}".format(guild_data_json['Name']), inline=False)
+        embebFindGuild.add_field(name="Nombre de la alianza:", value="{}".format(alliance_data_json['AllianceName']), inline=False)
+        embebFindGuild.add_field(name="Para continuar escribe:", value="Y", inline=False)
+        embebFindGuild.add_field(name="Para cancelar escribe:", value="N", inline=False)
+        embebFindGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebFindGuild)
+
+        # This will make sure that the response will only be registered if the following
+        # conditions are met:
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
+            msg.content.lower() in ["y", "n"]
+
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=30)
+
+            if msg.content.lower() == "y":
+
+                # Conectar a la base de datos, se creará si no existe
+                # con = sqlite3.connect('example.db')
+
+                # # Create cursor
+                # cur = con.cursor()
+
+                # # Se pone "f" delante para que se reconozca las {} como variables
+                # # Crear tabla de la configuración de la guild
+                # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, allianceId text)""")
+
+                # # Insertar datos en la tabla
+                # cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
+
+                # # Crear tabla de usuarios registrados de la guild
+                # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text)""")
+                
+                # # Guardar cambios
+                # con.commit()
+
+                # # Cerrar conexión
+                # con.close()
+
+                await ctx.send("Configuración aplicada")
+            else:
+                await ctx.send("Configuración caneclada")
+
+        except asyncio.TimeoutError:
+            await ctx.send("Terminado tiempo de espera, configuración cancelada")
 
 # !register ARGUMENTO
 @bot.command()
-async def register(ctx, arg):
+async def register(ctx, username):
 
     # Obtiene el ID del autor del mensaje
     member = ctx.message.author
@@ -76,7 +148,7 @@ async def register(ctx, arg):
     allianceRolID = discord.utils.get(member.guild.roles, name="{}".format(allianceRol))
 
     embebInfo = discord.Embed(title="Procesando búsqueda en la guild", color=0xFFA500)
-    embebInfo.add_field(name="Buscando a:", value="{}".format(arg), inline=False)
+    embebInfo.add_field(name="Buscando a:", value="{}".format(username), inline=False)
     embebInfo.add_field(name="Tiempo estimado", value="5 minutos", inline=False)
     embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
     # Mensaje embebido avisando
@@ -84,7 +156,7 @@ async def register(ctx, arg):
 
     # # Petición a la url, y guarda la respuesta
     # API que se usará, con parametrización del usuario
-    url = 'https://gameinfo.albiononline.com/api/gameinfo/search?q={}'.format(arg)
+    url = 'https://gameinfo.albiononline.com/api/gameinfo/search?q={}'.format(username)
     response = requests.get(url)
 
     # Devuelve la URL y el formato final no es un salto de linea, si no un espacio y se unen dos prints
@@ -111,12 +183,12 @@ async def register(ctx, arg):
                 
                 # INFO - Guild
                 # Si player es igual al nombre del jugador pasado devolver datos
-                if player['Name'].lower() == arg.lower() and player["GuildId"].lower() == guildID.lower():
+                if player['Name'].lower() == username.lower() and player["GuildId"].lower() == guildID.lower():
                     exist = True
 
                     # Mensaje embebido
                     embebFindGuild = discord.Embed(title="Jugador encontrado", color=0x00ff00)
-                    embebFindGuild.add_field(name="Bievenid@:", value="{}".format(arg), inline=False)
+                    embebFindGuild.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
                     embebFindGuild.add_field(name="Rol asignado:", value="{}".format(guildRol), inline=False)
                     embebFindGuild.add_field(name="Nick actualizado a:", value="{}".format(player['Name']), inline=False)
                     embebFindGuild.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -133,11 +205,11 @@ async def register(ctx, arg):
                     break
                 
                 # INFO - Alliance
-                if player['Name'].lower() == arg.lower() and player["AllianceId"].lower() == allianceID.lower():
+                if player['Name'].lower() == username.lower() and player["AllianceId"].lower() == allianceID.lower():
                     exist = True
                     # Mensaje embebido
                     embebFindAlliance = discord.Embed(title="Jugador encontrado", color=0x8c004b)
-                    embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(arg), inline=False)
+                    embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
                     embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(allianceRol), inline=False)
                     embebFindAlliance.add_field(name="Nick actualizado a:", value="{}".format(player['Name']), inline=False)
                     embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -156,7 +228,7 @@ async def register(ctx, arg):
                 if not exist:
                         # Mensaje embebido
                         embebNotFound = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
-                        embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+                        embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(username), inline=False)
                         embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
                         # Mensaje embebido avisando
                         await ctx.send(embed=embebNotFound)
@@ -166,7 +238,7 @@ async def register(ctx, arg):
         else:
             # Mensaje embebido
             embebNotFound = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
-            embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(arg), inline=False)
+            embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(username), inline=False)
             embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebNotFound)

@@ -30,7 +30,9 @@ python main.py
 
  - Change nickname on Discord adding tag before nick
 
- - Store registered users in BD
+ - Store registered users in DB
+
+ - Alliance TAG and ask guild TAG to store in DB
 
  - Ask for rol to give to guild members
 
