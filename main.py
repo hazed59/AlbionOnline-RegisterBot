@@ -26,6 +26,170 @@ async def on_ready():
 @bot.command(
     pass_context=True,
     brief="Initial bot setup.",
+    help="Configure bot prefix, Guild ID, Guild TAG, Alliance ID and Alliance TAG."
+)
+# Check if have admin perms
+@commands.has_permissions(administrator=True)
+async def setup2(ctx):
+    # Guardar la ID de la guild
+    DiscordGuildID = ctx.message.guild.id
+    # Nombre de las tablas según ID de la guild
+    table_users = "{}user".format(DiscordGuildID)
+    table_config = "{}config".format(DiscordGuildID)
+
+    botPrefixOk = False
+    while not botPrefixOk:
+        await ctx.send("Introduce el prefijo del bot")
+
+        # This will make sure that the response will only be registered if the following
+        # conditions are met:
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+        
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=5)
+            botPrefixOk = True
+            botPrefixResponse = True
+        except asyncio.TimeoutError:
+            await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            botPrefixOk = True
+            botPrefixResponse = False
+
+    if botPrefixResponse:
+        botPrefix = msg.content
+    else:
+        return
+
+    guildExist = False
+    while not guildExist:
+        await ctx.send("Introduce la ID del gremio")
+
+        # This will make sure that the response will only be registered if the following
+        # conditions are met:
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=5)
+            guildResponse = True
+        except asyncio.TimeoutError:
+            await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            guildExist = True
+            guildResponse = False
+
+        if guildResponse:
+            guildId = msg.content
+
+            guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/guilds/{}'.format(guildId)
+            guildResponse = requests.get(guildUrl)
+
+            if guildResponse.status_code == 200:
+                guild_data_json = json.loads(guildResponse.text)
+                # Mensaje embebido
+                embebCheckGuild = discord.Embed(title="Comprobación", color=0xFFA500)
+                embebCheckGuild.add_field(name="Info", value="Tu guild se llama: **{}**".format(guild_data_json['Name']), inline=False)
+                embebCheckGuild.add_field(name="¿Es correcto?", value="Si es así, escribe **Y**, para continuar, sino **N** para introducir uno nuevo")
+                embebCheckGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+                # Mensaje embebido avisando
+                await ctx.send(embed=embebCheckGuild)
+                # This will make sure that the response will only be registered if the following
+                # conditions are met:
+                def check(msg):
+                    return msg.author == ctx.author and msg.channel == ctx.channel and \
+                    msg.content.lower() in ["y", "n"]
+
+                try:
+                    msg = await bot.wait_for("message", check=check, timeout=5)
+                    if msg.content.lower() == "y":
+                        await ctx.send("ZI")
+                        guildExist = True
+                        guildResponse = True
+
+                except asyncio.TimeoutError:
+                    await ctx.send("Terminado tiempo de espera, configuración cancelada")
+                    guildExist = True
+                    guildResponse = False
+            else:
+                # Mensaje embebido
+                embebErrorGuild = discord.Embed(title="ID de guild no encontrado", color=0xFF0000)
+                embebErrorGuild.add_field(name="Info:", value="Comprueba que el ID de la guild es: {}".format(guildId), inline=False)
+                embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+                # Mensaje embebido avisando
+                await ctx.send(embed=embebErrorGuild)
+
+    if guildExist:
+        botPrefixOk = True
+    else:
+        return
+
+        # if guildExist:
+        #     await ctx.send("Introduce el TAG del gremio")
+
+        #     # This will make sure that the response will only be registered if the following
+        #     # conditions are met:
+        #     def check(msg):
+        #         return msg.author == ctx.author and msg.channel == ctx.channel
+
+        #     try:
+        #         msg = await bot.wait_for("message", check=check, timeout=30)
+        #     except asyncio.TimeoutError:
+        #         await ctx.send("Terminado tiempo de espera, configuración cancelada")
+
+        #     guildTag = msg.content
+
+        # if guildExist:
+        #     allianceExist = False
+        #     while not allianceExist:
+        #         await ctx.send("Introduce la ID de la alianza")
+
+        #         # This will make sure that the response will only be registered if the following
+        #         # conditions are met:
+        #         def check(msg):
+        #             return msg.author == ctx.author and msg.channel == ctx.channel
+
+        #         try:
+        #             msg = await bot.wait_for("message", check=check, timeout=30)
+        #         except asyncio.TimeoutError:
+        #             await ctx.send("Terminado tiempo de espera, configuración cancelada")
+        #             allianceExist = True
+
+        #     allianceId = msg.content
+
+        #     allianceUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceId)
+        #     guildResponse = requests.get(allianceUrl)
+
+        #     if guildResponse.status_code == 200:
+        #         guild_data_json = json.loads(guildResponse.text)
+        #         guildExist = True
+        #     else:
+        #         # Mensaje embebido
+        #         embebErrorAlliance = discord.Embed(title="ID de alianza no encontrado", color=0xFF0000)
+        #         embebErrorAlliance.add_field(name="Info:", value="Comprueba que el ID de la alianza {} es correcto".format(allianceId), inline=False)
+        #         embebErrorAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
+        #         # Mensaje embebido avisando
+        #         await ctx.send(embed=embebErrorAlliance)
+        #         allianceId = msg.content
+
+        # if allianceExist:
+        #     await ctx.send("Introduce el TAG de la alianza")
+
+        #     # This will make sure that the response will only be registered if the following
+        #     # conditions are met:
+        #     def check(msg):
+        #         return msg.author == ctx.author and msg.channel == ctx.channel
+
+        #     try:
+        #         msg = await bot.wait_for("message", check=check, timeout=30)
+        #     except asyncio.TimeoutError:
+        #         await ctx.send("Terminado tiempo de espera, configuración cancelada")
+
+        #     allianceTag = msg.content
+        # if allianceExist and guildExist:
+        # await ctx.send("Prefix: {} Guild ID: {} Guild TAG:{} Alliance ID: {} Alliance TAG: {}".format(botPrefix))
+
+@bot.command(
+    pass_context=True,
+    brief="Initial bot setup.",
     help="Configure bot prefix, GuildID and AllianceID.\nExameple: !setup ! w8ofVhjvQWOB3xCczo4szQ hRqowi9bTw6o44R0bsmIUw\nThis will config bot to use '!' as prefix, use 'w8ofVhjvQWOB3xCczo4szQ' as guild ID and 'hRqowi9bTw6o44R0bsmIUw' as allianceID"
 )
 # Check if have admin perms
@@ -34,6 +198,7 @@ async def setup(ctx, botPrefix, guildID, allianceID):
 
     # Guardar la ID de la guild
     DiscordGuildID = ctx.message.guild.id
+    # Nombre de las tablas según ID de la guild
     table_users = "{}user".format(DiscordGuildID)
     table_config = "{}config".format(DiscordGuildID)
 
@@ -47,17 +212,16 @@ async def setup(ctx, botPrefix, guildID, allianceID):
     guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/guilds/{}'.format(guildID)
     guildResponse = requests.get(guildUrl)
 
-    try:
+    if guildResponse.status_code == 200:
         guild_data_json = json.loads(guildResponse.text)
-        guildExist = "OK"
-    except:
+        guildExist = True
+    else:
         # Mensaje embebido
         embebErrorGuild = discord.Embed(title="ID de guild no encontrado", color=0xFF0000)
         embebErrorGuild.add_field(name="Info:", value="Compruba que el ID de la guild {} es correcto".format(guildID), inline=False)
         embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
         # Mensaje embebido avisando
         await ctx.send(embed=embebErrorGuild)
-        guildExist = "KO"
 
     allianceUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceID)
     allianceResponse = requests.get(allianceUrl)
