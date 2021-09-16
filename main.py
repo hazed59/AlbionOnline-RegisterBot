@@ -31,6 +31,7 @@ async def on_ready():
 # Check if have admin perms
 @commands.has_permissions(administrator=True)
 async def setup2(ctx):
+
     # Guardar la ID de la guild
     DiscordGuildID = ctx.message.guild.id
     # Nombre de las tablas según ID de la guild
@@ -47,7 +48,7 @@ async def setup2(ctx):
             return msg.author == ctx.author and msg.channel == ctx.channel
         
         try:
-            msg = await bot.wait_for("message", check=check, timeout=5)
+            msg = await bot.wait_for("message", check=check, timeout=30)
             botPrefixOk = True
             botPrefixResponse = True
         except asyncio.TimeoutError:
@@ -70,7 +71,7 @@ async def setup2(ctx):
             return msg.author == ctx.author and msg.channel == ctx.channel
 
         try:
-            msg = await bot.wait_for("message", check=check, timeout=5)
+            msg = await bot.wait_for("message", check=check, timeout=30)
             guildResponse = True
         except asyncio.TimeoutError:
             await ctx.send("Terminado tiempo de espera, configuración cancelada")
@@ -99,9 +100,8 @@ async def setup2(ctx):
                     msg.content.lower() in ["y", "n"]
 
                 try:
-                    msg = await bot.wait_for("message", check=check, timeout=5)
+                    msg = await bot.wait_for("message", check=check, timeout=30)
                     if msg.content.lower() == "y":
-                        await ctx.send("ZI")
                         guildExist = True
                         guildResponse = True
 
@@ -117,25 +117,94 @@ async def setup2(ctx):
                 # Mensaje embebido avisando
                 await ctx.send(embed=embebErrorGuild)
 
-    if guildExist:
-        botPrefixOk = True
-    else:
+    if not guildResponse:
         return
 
-        # if guildExist:
-        #     await ctx.send("Introduce el TAG del gremio")
+    guildTag = False
+    while not guildTag:
+        await ctx.send("Introduce el TAG de la Guild")
 
-        #     # This will make sure that the response will only be registered if the following
-        #     # conditions are met:
-        #     def check(msg):
-        #         return msg.author == ctx.author and msg.channel == ctx.channel
+        # This will make sure that the response will only be registered if the following
+        # conditions are met:
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+        
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=30)
 
-        #     try:
-        #         msg = await bot.wait_for("message", check=check, timeout=30)
-        #     except asyncio.TimeoutError:
-        #         await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            if len(msg.clean_content) == 3:
+                guildTag = True
+                guildTagResponse = True
+                botPrefix = msg.content
+            else:
+                guildTagResponse = False
+        except asyncio.TimeoutError:
+            await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            guildTag = True
+            guildTagResponse = False
 
-        #     guildTag = msg.content
+    if not guildTagResponse:
+        return
+
+    allianceExist = False
+    while not allianceExist:
+        await ctx.send("Introduce la ID de la alianza")
+
+        # This will make sure that the response will only be registered if the following
+        # conditions are met:
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=30)
+            allianceResponse = True
+        except asyncio.TimeoutError:
+            await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            allianceExist = True
+            allianceResponse = False
+
+        if allianceResponse:
+            allianceId = msg.content
+
+            guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceId)
+            allianceResponse = requests.get(guildUrl)
+
+            if allianceResponse.status_code == 200:
+                alliance_data_json = json.loads(allianceResponse.text)
+                # Mensaje embebido
+                embebAllianceGuild = discord.Embed(title="Comprobación", color=0xFFA500)
+                embebAllianceGuild.add_field(name="Info", value="Tu alianza se llama: **{}**".format(alliance_data_json['AllianceName']), inline=False)
+                embebAllianceGuild.add_field(name="¿Es correcto?", value="Si es así, escribe **Y**, para continuar, sino **N** para introducir uno nuevo")
+                embebAllianceGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+                # Mensaje embebido avisando
+                await ctx.send(embed=embebAllianceGuild)
+                # This will make sure that the response will only be registered if the following
+                # conditions are met:
+                def check(msg):
+                    return msg.author == ctx.author and msg.channel == ctx.channel and \
+                    msg.content.lower() in ["y", "n"]
+
+                try:
+                    msg = await bot.wait_for("message", check=check, timeout=30)
+                    if msg.content.lower() == "y":
+                        allianceExist = True
+                        allianceResponse = True
+
+                except asyncio.TimeoutError:
+                    await ctx.send("Terminado tiempo de espera, configuración cancelada")
+                    allianceExist = True
+                    allianceResponse = False
+            else:
+                # Mensaje embebido
+                embebErrorGuild = discord.Embed(title="ID de alianza no encontrado", color=0xFF0000)
+                embebErrorGuild.add_field(name="Info:", value="Comprueba que el ID de la alianza es: {}".format(allianceId), inline=False)
+                embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+                # Mensaje embebido avisando
+                await ctx.send(embed=embebErrorGuild)
+
+    if not allianceResponse:
+        return
+
 
         # if guildExist:
         #     allianceExist = False
@@ -275,7 +344,7 @@ async def setup(ctx, botPrefix, guildID, allianceID):
                 # cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, allianceId) values (?, ?, ?)""", (botPrefix, guildID, allianceID))
 
                 # # Crear tabla de usuarios registrados de la guild
-                # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text)""")
+                # cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text);""")
                 
                 # # Guardar cambios
                 # con.commit()
