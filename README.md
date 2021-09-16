@@ -28,14 +28,25 @@ python main.py
 
 ## TODO
 
- - Change nickname on Discord adding tag before nick
+- Create Database and table
+- Setup command
+  - Ask
+    - Bot prefix
+    - Guild ID
+    - Alliance ID
+    - Guild Rol ID
+    - Alliance Rol ID
+      - If empty use api alliance tag
+  - Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName)
+  - Save values in Database
+- Register command
+  - Check if user its already registered
+  - Add role
+  - Change nickname
+  - Store in guild database
+- Cleanup of users if the arent any more on the guild or alliance
+- Command timeouts
 
- - Store registered users in DB
+### TODO Later
 
- - Alliance TAG and ask guild TAG to store in DB
-
- - Ask for rol to give to guild members
-
- - Ask for rol to give to alliance members
-
-Cleanup of users if the arent any more on the guild or alliance
+- Cleanup users every week, if they arent on the guild and remove from database
