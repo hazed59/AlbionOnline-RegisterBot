@@ -28,15 +28,18 @@ python main.py
 
 ## TODO
 
-- Create Database and table
+- Create Database and table (DONE)
+- Custom bot prefix
 - Setup command
   - Ask
-    - Bot prefix (PARTIAL, MISSING DATAQBASE VARIABLE IN PREFIX)
+    - Bot prefix (DONE)
     - Guild ID (DONE)
     - Alliance ID (DONE)
     - Guild Rol ID (DONE)
     - Alliance Rol ID (DONE)
   - Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
+  - Add multiples Guilds
+  - Add multiples Alliances
   - Save values in Database (DONE)
 - Register command
   - Check if user its already registered

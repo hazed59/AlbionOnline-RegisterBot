@@ -412,7 +412,10 @@ async def register(ctx, username):
                     await member.add_roles(role)
 
                     # Cambiar nombre
-                    await member.edit(nick="[{}] {}".format(registerGuildTag ,player['Name']))
+                    try:
+                        await member.edit(nick="[{}] {}".format(registerGuildTag ,player['Name']))
+                    except nextcord.errors.Forbidden:
+                        pass
 
                     break
                 
