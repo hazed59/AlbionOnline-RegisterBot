@@ -354,12 +354,16 @@ async def register(ctx, username):
 
     cur = con.cursor()
 
-    registerGuildId = cur.execute('SELECT guildId FROM DiscordServersConfig').fetchall()[0][0]
-    registerGuildTag = cur.execute('SELECT guildTagString FROM DiscordServersConfig').fetchall()[0][0]
-    registerGuildRol = cur.execute('SELECT guildRol FROM DiscordServersConfig').fetchall()[0][0]
-    registerAllianceId = cur.execute('SELECT allianceId FROM DiscordServersConfig').fetchall()[0][0]
-    registerAllianceTag = cur.execute('SELECT allianceTagString FROM DiscordServersConfig').fetchall()[0][0]
-    registerAllianceRol = cur.execute('SELECT allianceRol FROM DiscordServersConfig').fetchall()[0][0]
+    try:
+        registerGuildId = cur.execute('SELECT guildId FROM DiscordServersConfig').fetchall()[0][0]
+        registerGuildTag = cur.execute('SELECT guildTagString FROM DiscordServersConfig').fetchall()[0][0]
+        registerGuildRol = cur.execute('SELECT guildRol FROM DiscordServersConfig').fetchall()[0][0]
+        registerAllianceId = cur.execute('SELECT allianceId FROM DiscordServersConfig').fetchall()[0][0]
+        registerAllianceTag = cur.execute('SELECT allianceTagString FROM DiscordServersConfig').fetchall()[0][0]
+        registerAllianceRol = cur.execute('SELECT allianceRol FROM DiscordServersConfig').fetchall()[0][0]
+    except sqlite3.OperationalError:
+        await ctx.send("El bot aún no está configurado, use !setup para configurarlo, si no tiene permisos, contacte con el administrador.")
+        return
 
     con.close()
 
