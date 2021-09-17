@@ -3,8 +3,11 @@
 ## Setting up
 
 virtualenv -p python3 env
+
 source env/bin/activate
+
 pip install -r requeriments.txt
+
 Create a .env like this:
 
 ```env
@@ -25,6 +28,7 @@ Those will be the permissions that the bot will have
 ## Executing the bot
 
 pip install -r requeriments.txt
+
 python main.py
 
 ## TODO
