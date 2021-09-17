@@ -175,117 +175,136 @@ async def setup(ctx):
     if not guildRolResponse:
         return
 
-    allianceExist = False
-    while not allianceExist:
-        await ctx.send("Introduce la ID de la alianza")
+    await ctx.send("¿Quieres añadir alianza? 'Y' or 'N'")
 
-        # This will make sure that the response will only be registered if the following
-        # conditions are met:
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel and \
+        msg.content.lower() in ["y", "n"]
 
-        try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
-            allianceResponse = True
-        except asyncio.TimeoutError:
-            await ctx.send("Terminado tiempo de espera, configuración cancelada")
-            allianceExist = True
-            allianceResponse = False
+    try:
+        msg = await bot.wait_for("message", check=check, timeout=30)
+        if msg.content.lower() == "y":
 
-        if allianceResponse:
-            allianceId = msg.content
+            allianceExist = False
+            while not allianceExist:
+                await ctx.send("Introduce la ID de la alianza")
 
-            guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceId)
-            allianceResponse = requests.get(guildUrl)
-
-            if allianceResponse.status_code == 200:
-                alliance_data_json = json.loads(allianceResponse.text)
-                # Mensaje embebido
-                embebAllianceGuild = discord.Embed(title="Comprobación", color=0xFFA500)
-                embebAllianceGuild.add_field(name="Info", value="Tu alianza se llama: **{}**".format(alliance_data_json['AllianceName']), inline=False)
-                embebAllianceGuild.add_field(name="¿Es correcto?", value="Si es así, escribe **Y**, para continuar, sino **N** para introducir uno nuevo")
-                embebAllianceGuild.set_footer(text="Bot creado por: QueenMirna#9103")
-                # Mensaje embebido avisando
-                await ctx.send(embed=embebAllianceGuild)
                 # This will make sure that the response will only be registered if the following
                 # conditions are met:
                 def check(msg):
-                    return msg.author == ctx.author and msg.channel == ctx.channel and \
-                    msg.content.lower() in ["y", "n"]
+                    return msg.author == ctx.author and msg.channel == ctx.channel
 
                 try:
                     msg = await bot.wait_for("message", check=check, timeout=30)
-                    if msg.content.lower() == "y":
-                        allianceExist = True
-                        allianceResponse = True
-
+                    allianceResponse = True
                 except asyncio.TimeoutError:
                     await ctx.send("Terminado tiempo de espera, configuración cancelada")
                     allianceExist = True
                     allianceResponse = False
-            else:
-                # Mensaje embebido
-                embebErrorGuild = discord.Embed(title="ID de alianza no encontrado", color=0xFF0000)
-                embebErrorGuild.add_field(name="Info:", value="Comprueba que el ID de la alianza es: {}".format(allianceId), inline=False)
-                embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
-                # Mensaje embebido avisando
-                await ctx.send(embed=embebErrorGuild)
 
-    if not allianceResponse:
+                if allianceResponse:
+                    allianceId = msg.content
+
+                    guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceId)
+                    allianceResponse = requests.get(guildUrl)
+
+                    if allianceResponse.status_code == 200:
+                        alliance_data_json = json.loads(allianceResponse.text)
+                        # Mensaje embebido
+                        embebAllianceGuild = discord.Embed(title="Comprobación", color=0xFFA500)
+                        embebAllianceGuild.add_field(name="Info", value="Tu alianza se llama: **{}**".format(alliance_data_json['AllianceName']), inline=False)
+                        embebAllianceGuild.add_field(name="¿Es correcto?", value="Si es así, escribe **Y**, para continuar, sino **N** para introducir uno nuevo")
+                        embebAllianceGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+                        # Mensaje embebido avisando
+                        await ctx.send(embed=embebAllianceGuild)
+
+                        # This will make sure that the response will only be registered if the following
+                        # conditions are met:
+                        def check(msg):
+                            return msg.author == ctx.author and msg.channel == ctx.channel and \
+                            msg.content.lower() in ["y", "n"]
+
+                        try:
+                            msg = await bot.wait_for("message", check=check, timeout=30)
+                            if msg.content.lower() == "y":
+                                allianceExist = True
+                                allianceResponse = True
+
+                        except asyncio.TimeoutError:
+                            await ctx.send("Terminado tiempo de espera, configuración cancelada")
+                            allianceExist = True
+                            allianceResponse = False
+                    else:
+                        # Mensaje embebido
+                        embebErrorGuild = discord.Embed(title="ID de alianza no encontrado", color=0xFF0000)
+                        embebErrorGuild.add_field(name="Info:", value="Comprueba que el ID de la alianza es: {}".format(allianceId), inline=False)
+                        embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+                        # Mensaje embebido avisando
+                        await ctx.send(embed=embebErrorGuild)
+
+            if not allianceResponse:
+                return
+
+            allianceRol = False
+            while not allianceRol:
+                await ctx.send("Introduce el nombre del ROL que se asignará a los miembros de la guild al registrarse.")
+
+                # This will make sure that the response will only be registered if the following
+                # conditions are met:
+                def check(msg):
+                    return msg.author == ctx.author and msg.channel == ctx.channel
+                
+                try:
+                    msg = await bot.wait_for("message", check=check, timeout=30)
+
+                    if get(ctx.guild.roles, name="{}".format(msg.content)):
+                        allianceRol = True
+                        allianceRolResponse = True
+                        allianceRol = msg.content
+                    else:
+                        await ctx.send("No existe ningún con ROL con ese nombre")
+                        allianceRolResponse = False
+                except asyncio.TimeoutError:
+                    await ctx.send("Terminado tiempo de espera, configuración cancelada")
+                    allianceRol = True
+                    allianceRolResponse = False
+            
+            # allianceTag = False
+            # while not allianceTag:
+            #     await ctx.send("Introduce el TAG de la Alianza")
+
+            #     # This will make sure that the response will only be registered if the following
+            #     # conditions are met:
+            #     def check(msg):
+            #         return msg.author == ctx.author and msg.channel == ctx.channel
+                
+            #     try:
+            #         msg = await bot.wait_for("message", check=check, timeout=30)
+
+            #         if len(msg.clean_content) > 4:
+            #             allianceTag = True
+            #             allianceTagResponse = True
+            #             allianceTagString = msg.content
+            #         else:
+            #             await ctx.send("El TAG no debe ser mayor de 4 caracteres")
+            #             allianceTagResponse = False
+            #     except asyncio.TimeoutError:
+            #         await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            #         allianceTag = True
+            #         allianceTagResponse = False
+
+            # if not allianceTagResponse:
+            #     return
+
+            if not allianceRolResponse:
+                return
+
+        else:
+            allianceExist = False
+
+    except asyncio.TimeoutError:
+        await ctx.send("Terminado tiempo de espera, configuración cancelada")
         return
-
-    allianceRol = False
-    while not allianceRol:
-        await ctx.send("Introduce el nombre del ROL que se asignará a los miembros de la guild al registrarse.")
-
-        # This will make sure that the response will only be registered if the following
-        # conditions are met:
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel
-        
-        try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
-
-            if get(ctx.guild.roles, name="{}".format(msg.content)):
-                allianceRol = True
-                allianceRolResponse = True
-                allianceRol = msg.content
-            else:
-                await ctx.send("No existe ningún con ROL con ese nombre")
-                allianceRolResponse = False
-        except asyncio.TimeoutError:
-            await ctx.send("Terminado tiempo de espera, configuración cancelada")
-            allianceRol = True
-            allianceRolResponse = False
-
-    if not allianceRolResponse:
-        return
-    # allianceTag = False
-    # while not allianceTag:
-    #     await ctx.send("Introduce el TAG de la Alianza")
-
-    #     # This will make sure that the response will only be registered if the following
-    #     # conditions are met:
-    #     def check(msg):
-    #         return msg.author == ctx.author and msg.channel == ctx.channel
-        
-    #     try:
-    #         msg = await bot.wait_for("message", check=check, timeout=30)
-
-    #         if len(msg.clean_content) > 4:
-    #             allianceTag = True
-    #             allianceTagResponse = True
-    #             allianceTagString = msg.content
-    #         else:
-    #             await ctx.send("El TAG no debe ser mayor de 4 caracteres")
-    #             allianceTagResponse = False
-    #     except asyncio.TimeoutError:
-    #         await ctx.send("Terminado tiempo de espera, configuración cancelada")
-    #         allianceTag = True
-    #         allianceTagResponse = False
-
-    # if not allianceTagResponse:
-    #     return
 
     if guildTag and allianceExist:
         # Mensaje embebido
@@ -293,7 +312,7 @@ async def setup(ctx):
         embebFindGuild.add_field(name="Prefijo del bot:", value="{}".format(botPrefix), inline=False)
         embebFindGuild.add_field(name="Nombre del gremio:", value="{}".format(guild_data_json['Name']), inline=False)
         embebFindGuild.add_field(name="TAG del gremio:", value="{}".format(guildTagString), inline=False)
-        embebFindGuild.add_field(name="ROL de la alianza:", value="{}".format(guildRol), inline=False)
+        embebFindGuild.add_field(name="ROL del gremio:", value="{}".format(guildRol), inline=False)
         embebFindGuild.add_field(name="Nombre de la alianza:", value="{}".format(alliance_data_json['AllianceName']), inline=False)
         embebFindGuild.add_field(name="TAG de la alianza:", value="{}".format(alliance_data_json['AllianceTag']), inline=False)
         embebFindGuild.add_field(name="ROL de la alianza:", value="{}".format(allianceRol), inline=False)
@@ -302,45 +321,59 @@ async def setup(ctx):
         # Mensaje embebido avisando
         await ctx.send(embed=embebFindGuild)
 
+    if guildTag and not allianceExist:
+        embebFindGuild = discord.Embed(title="Confirma que los valores son correctos", color=0x00ff00)
+        embebFindGuild.add_field(name="Prefijo del bot:", value="{}".format(botPrefix), inline=False)
+        embebFindGuild.add_field(name="Nombre del gremio:", value="{}".format(guild_data_json['Name']), inline=False)
+        embebFindGuild.add_field(name="TAG del gremio:", value="{}".format(guildTagString), inline=False)
+        embebFindGuild.add_field(name="ROL de la guild:", value="{}".format(guildRol), inline=False)
+        embebFindGuild.add_field(name="¿Es correcto?", value="Si es así, escribe **Y**, para continuar, sino **N** para introducir uno nuevo")
+        embebFindGuild.set_footer(text="Bot creado por: QueenMirna#9103")
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebFindGuild)
+
         # This will make sure that the response will only be registered if the following
         # conditions are met:
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel and \
-            msg.content.lower() in ["y", "n"]
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel and \
+        msg.content.lower() in ["y", "n"]
 
-        try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
+    try:
+        msg = await bot.wait_for("message", check=check, timeout=30)
 
-            if msg.content.lower() == "y":
+        if msg.content.lower() == "y":
 
-                #Conectar a la base de datos, se creará si no existe
-                con = sqlite3.connect('example.db')
+            #Conectar a la base de datos, se creará si no existe
+            con = sqlite3.connect('example.db')
 
-                # Create cursor
-                cur = con.cursor()
+            # Create cursor
+            cur = con.cursor()
 
-                # Se pone "f" delante para que se reconozca las {} como variables
-                # Crear tabla de la configuración de la guild
-                cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, guildTagString text, guildRol text, allianceId text, allianceTagString text, allianceRol text)""")
+            # Se pone "f" delante para que se reconozca las {} como variables
+            # Crear tabla de la configuración de la guild
+            cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, guildTagString text, guildRol text, allianceId text, allianceTagString text, allianceRol text)""")
 
-                # Insertar datos en la tabla
+            # Insertar datos en la tabla
+            if allianceExist:
                 cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) values (?, ?, ?, ?, ?, ?, ?)""", (botPrefix, guildId, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol))
-
-                # Crear tabla de usuarios registrados de la guild
-                cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text);""")
-                
-                # Guardar cambios
-                con.commit()
-
-                # Cerrar conexión
-                con.close()
-
-                await ctx.send("Configuración aplicada")
             else:
-                await ctx.send("Configuración caneclada")
+                cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) values (?, ?, ?, ?, 'none', 'none', 'none')""", (botPrefix, guildId, guildTagString, guildRol))
 
-        except asyncio.TimeoutError:
-            await ctx.send("Terminado tiempo de espera, configuración cancelada")
+            # Crear tabla de usuarios registrados de la guild
+            cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text);""")
+            
+            # Guardar cambios
+            con.commit()
+
+            # Cerrar conexión
+            con.close()
+
+            await ctx.send("Configuración aplicada")
+        else:
+            await ctx.send("Configuración caneclada")
+
+    except asyncio.TimeoutError:
+        await ctx.send("Terminado tiempo de espera, configuración cancelada")
 
 # !register ARGUMENTO
 @bot.command(
