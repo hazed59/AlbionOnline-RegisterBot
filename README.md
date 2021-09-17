@@ -42,15 +42,20 @@ python main.py
     - [X] Alliance ID (DONE)
     - [X] Guild Rol ID (DONE)
     - [X] Alliance Rol ID (DONE)
+    - [ ] Update sql insert to avoid duplicate rows
   - [X] Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
-  - [ ] Add multiples Guilds
-  - [ ] Add multiples Alliances
   - [X] Save values in Database (DONE)
 - Register command
   - [X] Check if user its already registered
   - [X] Add role (DONE)
   - [X] Change nickname (DONE)
   - [X] Store users in guild database
+  - [ ] Update sql SELECT to get data from GUILD instead of return every value and get first
+  - [ ] Check from all guilds/alliances (separator a ',')
+- addGuild command
+  - [ ] Add Guild to exit field (separator a ',')
+- addAlliance command
+  - [ ] Add Alliance to exit field (separator a ',')
 - [X] Command timeouts (DONE)
 - [X] Auto-clean commands or whole channel
 
