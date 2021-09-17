@@ -460,6 +460,25 @@ async def register(ctx, username):
                     # Cambiar nombre
                     await member.edit(nick="[{}] {}".format(registerAllianceTag ,player['Name']))
 
+                                        # Nombre de las tablas según ID de la guild
+                    table_users = "registedUsers{}".format(DiscordGuildID)
+
+                    con = sqlite3.connect('example.db')
+
+                    # Create cursor
+                    cur = con.cursor()
+
+                    memberId = ctx.message.author.id
+                    # Se pone "f" delante para que se reconozca las {} como variables
+                    # Insertar datos en la tabla
+                    cur.execute(f"""INSERT INTO {table_users} (userid, albionnick) values (?, ?)""", (memberId, username))
+                    
+                    # Guardar cambios
+                    con.commit()
+
+                    # Cerrar conexión
+                    con.close()
+
                     break
 
                 # Si no existe un jugador con ese nombre, puede que sea incompleto o existan varios, pero no coincide ninguno
