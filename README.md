@@ -24,6 +24,7 @@ Those will be the permissions that the bot will have
 
 ## Executing the bot
 
+pip install -r requeriments.txt
 python main.py
 
 ## TODO
