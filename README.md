@@ -47,10 +47,10 @@ python main.py
   - [ ] Add multiples Alliances
   - [X] Save values in Database (DONE)
 - Register command
-  - [ ] Check if user its already registered
+  - [X] Check if user its already registered
   - [X] Add role (DONE)
   - [X] Change nickname (DONE)
-  - [ ] Store users in guild database
+  - [X] Store users in guild database
 - [X] Command timeouts (DONE)
 - [X] Auto-clean commands or whole channel
 
@@ -58,7 +58,7 @@ python main.py
 
 - [ ] Blacklist command
 - [ ] Cleanup of users if the arent any more on the guild or alliance
-- [ ] Unregister command (Para usuarios)
-- [ ] forceUnregister command (Unregister user, for users with manage roles permission)
+- [X] Unregister command (Para usuarios)
+- [ ] forceUnregister command (Unregister user, for users with manage roles permission, por si está blacklisted)
 - [ ] Send query to guild and save all members every X minutes, avoiding spamming the API
 - [ ] Cleanup users every day, if they arent on the guild and remove from database
