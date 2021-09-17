@@ -28,30 +28,32 @@ python main.py
 
 ## TODO
 
-- Create Database and table (DONE)
-- Custom bot prefix
+- [X] Create Database and table (DONE)
+- [ ] Custom bot prefix
 - Setup command
   - Ask
-    - Bot prefix (DONE)
-    - Guild ID (DONE)
-    - Alliance ID (DONE)
-    - Guild Rol ID (DONE)
-    - Alliance Rol ID (DONE)
-  - Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
-  - Add multiples Guilds
-  - Add multiples Alliances
-  - Save values in Database (DONE)
+    - [X] Bot prefix (DONE)
+    - [X] Guild ID (DONE)
+    - [X] Alliance ID (DONE)
+    - [X] Guild Rol ID (DONE)
+    - [X] Alliance Rol ID (DONE)
+  - [X] Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
+  - [ ] Add multiples Guilds
+  - [ ] Add multiples Alliances
+  - [X] Save values in Database (DONE)
 - Register command
-  - Check if user its already registered
-  - Add role (DONE)
-  - Change nickname (DONE)
-  - Store in guild database
-- Blacklist command
-- Cleanup of users if the arent any more on the guild or alliance
-- Command timeouts (DONE)
-- Unregister command (Para usuarios)
-- forceUnregister command (Unregister user, para los que tengan permisos de adminstrar roles)
+  - [ ] Check if user its already registered
+  - [X] Add role (DONE)
+  - [X] Change nickname (DONE)
+  - [ ] Store users in guild database
+- [X] Command timeouts (DONE)
+- [X] Auto-clean commands or whole channel
 
 ### TODO Later
 
-- Cleanup users every week, if they arent on the guild and remove from database
+- [ ] Blacklist command
+- [ ] Cleanup of users if the arent any more on the guild or alliance
+- [ ] Unregister command (Para usuarios)
+- [ ] forceUnregister command (Unregister user, for users with manage roles permission)
+- [ ] Send query to guild and save all members every X minutes, avoiding spamming the API
+- [ ] Cleanup users every day, if they arent on the guild and remove from database
