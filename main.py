@@ -391,9 +391,14 @@ async def register(ctx, username):
     DiscordGuildID = ctx.message.guild.id
     table_users = "registedUsers{}".format(DiscordGuildID)
 
-    checkUser = cur.execute(f"""SELECT userid FROM {table_users} where userid={memberId}""").fetchall()[0][0]
+    try:
+        checkUser = cur.execute(f"""SELECT userid FROM {table_users} where userid={memberId}""").fetchall()[0][0]
+    except IndexError:
+        checkUser = False
+        pass
+        
 
-    if checkUser != "":
+    if checkUser:
         checkNick = cur.execute(f"""SELECT albionnick FROM {table_users}""").fetchall()[0][0]
 
         embebInfo = discord.Embed(title="Ya estás registrado", color=0xff0000)
