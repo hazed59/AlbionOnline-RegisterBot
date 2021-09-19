@@ -34,7 +34,6 @@ python main.py
 ## TODO
 
 - [X] Create Database and table (DONE)
-- [ ] Custom bot prefix
 - Setup command
   - Ask
     - [X] Bot prefix (DONE)
@@ -42,7 +41,7 @@ python main.py
     - [X] Alliance ID (DONE)
     - [X] Guild Rol ID (DONE)
     - [X] Alliance Rol ID (DONE)
-    - [ ] Update sql insert to avoid duplicate rows
+    - [X] Update sql insert to avoid duplicate rows (DONE)
   - [X] Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
   - [X] Save values in Database (DONE)
 - Register command
@@ -67,3 +66,4 @@ python main.py
 - [ ] forceUnregister command (Unregister user, for users with manage roles permission, por si está blacklisted)
 - [ ] Send query to guild and save all members every X minutes, avoiding spamming the API
 - [ ] Cleanup users every day, if they arent on the guild and remove from database
+- [ ] Custom bot prefix
