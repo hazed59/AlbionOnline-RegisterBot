@@ -15,8 +15,9 @@ load_dotenv()
 # Get env var and save to var
 TOKEN = os.environ.get("TOKEN")
 
-# Prefijo de los comandos
-bot = commands.Bot(command_prefix='!')
+
+botPrefix = "!"
+bot = commands.Bot(command_prefix='{}'.format(botPrefix))
 
 # Iniciar bot con el token introducido
 @bot.event
@@ -351,13 +352,38 @@ async def setup(ctx):
 
             # Se pone "f" delante para que se reconozca las {} como variables
             # Crear tabla de la configuración de la guild
-            cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} (botPrefix text, guildId text, guildTagString text, guildRol text, allianceId text, allianceTagString text, allianceRol text)""")
+            cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} 
+                        (guildId TEXT PRIMARY KEY,
+                        botPrefix TEXT,
+                        guildTagString TEXT,
+                        guildRol TEXT,
+                        allianceId TEXT,
+                        allianceTagString TEXT,
+                        allianceRol TEXT)"""
+                        )
 
             # Insertar datos en la tabla
             if allianceExist:
-                cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) values (?, ?, ?, ?, ?, ?, ?)""", (botPrefix, guildId, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol))
+                cur.execute(f"""INSERT INTO {table_config} (guildId, botPrefix, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) 
+                VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(guildId) DO UPDATE SET
+                guildId="{guildId}",
+                botPrefix="{botPrefix}",
+                guildTagString="{guildTagString}",
+                guildRol="{guildRol}",
+                allianceId="{allianceId}",
+                allianceTagString="{ alliance_data_json['AllianceTag']}",
+                allianceRol="{allianceRol}"
+                """, (guildId, botPrefix, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol)
+                )
             else:
-                cur.execute(f"""INSERT INTO {table_config} (botPrefix, guildId, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) values (?, ?, ?, ?, 'none', 'none', 'none')""", (botPrefix, guildId, guildTagString, guildRol))
+                cur.execute(f"""INSERT INTO {table_config} (guildId, botPrefix, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) 
+                VALUES (?, ?, ?, ?, 'none', 'none', 'none') ON CONFLICT(guildId) DO UPDATE SET
+                guildId="{guildId}",
+                botPrefix="{botPrefix}",
+                guildTagString="{guildTagString}",
+                guildRol="{guildRol}"
+                """, (guildId, botPrefix, guildTagString, guildRol)
+                )
 
             # Crear tabla de usuarios registrados de la guild
             cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text);""")
