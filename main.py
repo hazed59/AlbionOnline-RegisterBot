@@ -17,8 +17,28 @@ load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 
 
-botPrefix = "!"
-bot = commands.Bot(command_prefix='{}'.format(botPrefix))
+def botPrefixes(bot, message):
+
+    table_config = "DiscordServersConfig"
+
+    DiscordGuildID = message.guild.id
+
+    con = sqlite3.connect('example.db')
+
+    cur = con.cursor()
+
+    try:
+        botPrefix = cur.execute(f"""SELECT botPrefix FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0]
+    except (sqlite3.OperationalError, IndexError):
+        botPrefix = "!"
+    
+    con.close()
+
+    return botPrefix[0]
+
+bot = commands.Bot(
+    command_prefix= (botPrefixes)
+    )
 
 # Iniciar bot con el token introducido
 @bot.event
@@ -354,8 +374,9 @@ async def setup(ctx):
             # Se pone "f" delante para que se reconozca las {} como variables
             # Crear tabla de la configuración de la guild
             cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} 
-                        (guildId TEXT PRIMARY KEY,
+                        (discordGuildId TEXT PRIMARY KEY,
                         botPrefix TEXT,
+                        guildId TEXT,
                         guildTagString TEXT,
                         guildRol TEXT,
                         allianceId TEXT,
@@ -365,25 +386,43 @@ async def setup(ctx):
 
             # Insertar datos en la tabla
             if allianceExist:
-                cur.execute(f"""INSERT INTO {table_config} (guildId, botPrefix, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) 
-                VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(guildId) DO UPDATE SET
-                guildId="{guildId}",
+                cur.execute(f"""INSERT INTO {table_config} (
+                    discordGuildId,
+                    botPrefix,
+                    guildId,
+                    guildTagString,
+                    guildRol,
+                    allianceId,
+                    allianceTagString,
+                    allianceRol) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(discordGuildId) DO UPDATE SET
+                discordGuildId="{DiscordGuildID}",
                 botPrefix="{botPrefix}",
+                guildId="{guildId}",
                 guildTagString="{guildTagString}",
                 guildRol="{guildRol}",
                 allianceId="{allianceId}",
                 allianceTagString="{ alliance_data_json['AllianceTag']}",
                 allianceRol="{allianceRol}"
-                """, (guildId, botPrefix, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol)
+                """, (DiscordGuildID, botPrefix, guildId, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol)
                 )
             else:
-                cur.execute(f"""INSERT INTO {table_config} (guildId, botPrefix, guildTagString, guildRol, allianceId, allianceTagString, allianceRol) 
-                VALUES (?, ?, ?, ?, 'none', 'none', 'none') ON CONFLICT(guildId) DO UPDATE SET
-                guildId="{guildId}",
+                cur.execute(f"""INSERT INTO {table_config} (
+                    discordGuildId,
+                    guildId,
+                    botPrefix,
+                    guildTagString,
+                    guildRol,
+                    allianceId,
+                    allianceTagString,
+                    allianceRol) 
+                VALUES (?, ?, ?, ?, ?, 'none', 'none', 'none') ON CONFLICT(discordGuildId) DO UPDATE SET
+                discordGuildId="{DiscordGuildID}",
                 botPrefix="{botPrefix}",
+                guildId="{guildId}",
                 guildTagString="{guildTagString}",
                 guildRol="{guildRol}"
-                """, (guildId, botPrefix, guildTagString, guildRol)
+                """, (DiscordGuildID, guildId, botPrefix, guildTagString, guildRol)
                 )
 
             # Crear tabla de usuarios registrados de la guild
@@ -446,12 +485,12 @@ async def register(ctx, username):
         cur = con.cursor()
 
         try:
-            registerGuildId = cur.execute('SELECT guildId FROM DiscordServersConfig').fetchall()[0][0]
-            registerGuildTag = cur.execute('SELECT guildTagString FROM DiscordServersConfig').fetchall()[0][0]
-            registerGuildRol = cur.execute('SELECT guildRol FROM DiscordServersConfig').fetchall()[0][0]
-            registerAllianceId = cur.execute('SELECT allianceId FROM DiscordServersConfig').fetchall()[0][0]
-            registerAllianceTag = cur.execute('SELECT allianceTagString FROM DiscordServersConfig').fetchall()[0][0]
-            registerAllianceRol = cur.execute('SELECT allianceRol FROM DiscordServersConfig').fetchall()[0][0]
+            registerGuildId = cur.execute(f"""SELECT guildId FROM DiscordServersConfig where guildId={DiscordGuildID}""").fetchall()[0][0]
+            registerGuildTag = cur.execute(f"""SELECT guildTagString FROM DiscordServersConfig where guildId={DiscordGuildID}""").fetchall()[0][0]
+            registerGuildRol = cur.execute(f"""SELECT guildRol FROM DiscordServersConfig where guildId={DiscordGuildID}""").fetchall()[0][0]
+            registerAllianceId = cur.execute(f"""SELECT allianceId FROM DiscordServersConfig where guildId={DiscordGuildID}""").fetchall()[0][0]
+            registerAllianceTag = cur.execute(f"""SELECT allianceTagString FROM DiscordServersConfig where guildId={DiscordGuildID}""").fetchall()[0][0]
+            registerAllianceRol = cur.execute(f"""SELECT allianceRol FROM DiscordServersConfig where guildId={DiscordGuildID}""").fetchall()[0][0]
         except sqlite3.OperationalError:
             await ctx.send("El bot aún no está configurado, use !setup para configurarlo, si no tiene permisos, contacte con el administrador.")
             return

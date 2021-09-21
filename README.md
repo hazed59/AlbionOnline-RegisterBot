@@ -33,6 +33,7 @@ python main.py
 
 ## TODO
 
+- [X] Custom bot prefix
 - [X] Create Database and table (DONE)
 - Setup command
   - Ask
@@ -49,14 +50,19 @@ python main.py
   - [X] Add role (DONE)
   - [X] Change nickname (DONE)
   - [X] Store users in guild database
-  - [ ] Update sql SELECT to get data from GUILD instead of return every value and get first
+  - [X] Update sql SELECT to get data from GUILD instead of return every value and get first
+- [X] Command timeouts (DONE)
+- [X] Auto-clean commands or whole channel
+- [ ] Clear guild in database on bot exist
+
+### TOD First ###
+
+- Register command
   - [ ] Check from all guilds/alliances (separator a ',')
 - addGuild command
   - [ ] Add Guild to exit field (separator a ',')
 - addAlliance command
   - [ ] Add Alliance to exit field (separator a ',')
-- [X] Command timeouts (DONE)
-- [X] Auto-clean commands or whole channel
 
 ### TODO Later
 
@@ -66,4 +72,3 @@ python main.py
 - [ ] forceUnregister command (Unregister user, for users with manage roles permission, por si está blacklisted)
 - [ ] Send query to guild and save all members every X minutes, avoiding spamming the API
 - [ ] Cleanup users every day, if they arent on the guild and remove from database
-- [ ] Custom bot prefix
