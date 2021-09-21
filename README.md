@@ -62,10 +62,11 @@ python main.py
 ### TODO First ###
 
 - [ ] blacklist command with reason
+  - [ ] delete entry on database when blacklist
+- [ ] unblacklist (Only for manage rol users)
 - [ ] Register command
   - [ ] Check if user its on blacklist
-- [ ] unblacklist (Only for manage rol users)
-
+- [ ] check command to see if blacklisted
 ### TODO Later
 
 - [ ] addGuild command
