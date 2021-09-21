@@ -31,44 +31,50 @@ pip install -r requeriments.txt
 
 python main.py
 
-## TODO
+## DONE
 
-- [X] Custom bot prefix
-- [X] Create Database and table (DONE)
 - Setup command
   - Ask
-    - [X] Bot prefix (DONE)
-    - [X] Guild ID (DONE)
-    - [X] Alliance ID (DONE)
-    - [X] Guild Rol ID (DONE)
-    - [X] Alliance Rol ID (DONE)
-    - [X] Update sql insert to avoid duplicate rows (DONE)
-  - [X] Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName) (DONE)
-  - [X] Save values in Database (DONE)
+    - [X] Bot prefix
+    - [X] Guild ID
+    - [X] Alliance ID
+    - [X] Guild Rol ID
+    - [X] Alliance Rol ID
+    - [X] Update sql insert to avoid duplicate rows
+  - [X] Confirm values (Prefix, GuildName, GuildTag, AllianceName, AllianceTag, GuildRolName)
+  - [X] Save values in Database
 - Register command
   - [X] Check if user its already registered
-  - [X] Add role (DONE)
-  - [X] Change nickname (DONE)
+  - [X] Add role
+  - [X] Change nickname
   - [X] Store users in guild database
   - [X] Update sql SELECT to get data from GUILD instead of return every value and get first
-- [X] Command timeouts (DONE)
-- [X] Auto-clean commands or whole channel
-- [ ] Clear guild in database on bot exist
 
-### TOD First ###
+- General
+  - [X] Command timeouts
+  - [X] Unregister command (Para usuarios)
+  - [X] Custom bot prefix
 
-- Register command
-  - [ ] Check from all guilds/alliances (separator a ',')
-- addGuild command
-  - [ ] Add Guild to exit field (separator a ',')
-- addAlliance command
-  - [ ] Add Alliance to exit field (separator a ',')
+- Database
+  - [X] Create Database and table
+  - [X] Clear guild in database on bot exist
+
+### TODO First ###
+
+- [ ] blacklist command with reason
+- [ ] Register command
+  - [ ] Check if user its on blacklist
+- [ ] unblacklist (Only for manage rol users)
 
 ### TODO Later
 
-- [ ] Blacklist command
-- [ ] Cleanup of users if the arent any more on the guild or alliance
-- [X] Unregister command (Para usuarios)
-- [ ] forceUnregister command (Unregister user, for users with manage roles permission, por si está blacklisted)
+- [ ] addGuild command
+  - [ ] Add Guild to exit field (separator a ',')
+- [ ] addAlliance command
+  - [ ] Add Alliance to exit field (separator a ',')
+- [ ] Register command
+  - [ ] Check from all guilds/alliances (separator a ',')
+
 - [ ] Send query to guild and save all members every X minutes, avoiding spamming the API
-- [ ] Cleanup users every day, if they arent on the guild and remove from database
+- [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
+- [ ] Auto-clean commands and users messages

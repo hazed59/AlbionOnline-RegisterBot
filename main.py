@@ -46,6 +46,29 @@ async def on_ready():
     # Mensaje mostrando que está iniciado
     print('Logged in as {0.user}'.format(bot))
 
+@bot.event
+async def on_guild_remove(guild):
+
+    table_config = "DiscordServersConfig"
+
+    DiscordGuildID = guild.id
+
+    table_users = "registeredUsers{}".format(DiscordGuildID)
+
+    con = sqlite3.connect('example.db')
+
+    cur = con.cursor()
+
+    cur.execute(f"""DELETE FROM {table_config} where discordGuildId={DiscordGuildID}""")
+
+    cur.execute(f"""DROP TABLE {table_users}""")
+             
+    # Guardar cambios
+    con.commit()
+
+    con.close()
+
+
 @bot.command(
     pass_context=True,
     brief="Initial bot setup.",
@@ -58,7 +81,7 @@ async def setup(ctx):
     # Guardar la ID de la guild
     DiscordGuildID = ctx.message.guild.id
     # Nombre de las tablas según ID de la guild
-    table_users = "registedUsers{}".format(DiscordGuildID)
+    table_users = "registeredUsers{}".format(DiscordGuildID)
     table_config = "DiscordServersConfig"
 
     botPrefixOk = False
@@ -455,7 +478,7 @@ async def register(ctx, username):
     cur = con.cursor()
 
     DiscordGuildID = ctx.message.guild.id
-    table_users = "registedUsers{}".format(DiscordGuildID)
+    table_users = "registeredUsers{}".format(DiscordGuildID)
 
     try:
         checkUser = cur.execute(f"""SELECT userid FROM {table_users} where userid={memberId}""").fetchall()[0][0]
@@ -556,7 +579,7 @@ async def register(ctx, username):
                         # Guardar la ID de la guild
                         DiscordGuildID = ctx.message.guild.id
                         # Nombre de las tablas según ID de la guild
-                        table_users = "registedUsers{}".format(DiscordGuildID)
+                        table_users = "registeredUsers{}".format(DiscordGuildID)
 
                         con = sqlite3.connect('example.db')
 
@@ -606,7 +629,7 @@ async def register(ctx, username):
                             pass
 
                         # Nombre de las tablas según ID de la guild
-                        table_users = "registedUsers{}".format(DiscordGuildID)
+                        table_users = "registeredUsers{}".format(DiscordGuildID)
 
                         con = sqlite3.connect('example.db')
 
@@ -671,7 +694,7 @@ async def unregister(ctx):
     cur = con.cursor()
 
     DiscordGuildID = ctx.message.guild.id
-    table_users = "registedUsers{}".format(DiscordGuildID)
+    table_users = "registereddUsers{}".format(DiscordGuildID)
 
     checkUser = cur.execute(f"""SELECT userid FROM {table_users} where userid={memberId}""").fetchall()
 
