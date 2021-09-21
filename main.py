@@ -8,6 +8,7 @@ from nextcord.ext import commands
 import requests
 import json
 import asyncio
+from datetime import datetime
 
 # Load env variables file
 load_dotenv()
@@ -425,7 +426,7 @@ async def register(ctx, username):
         
 
     if checkUser:
-        checkNick = cur.execute(f"""SELECT albionnick FROM {table_users}""").fetchall()[0][0]
+        checkNick = cur.execute(f"""SELECT albionnick FROM {table_users} where userid={memberId}""").fetchall()[0][0]
 
         embebInfo = discord.Embed(title="Ya estás registrado", color=0xff0000)
         embebInfo.add_field(name="Registrado con el usuario", value="{}".format(checkNick), inline=False)
@@ -460,7 +461,7 @@ async def register(ctx, username):
         # Obtiene el ID del autor del mensaje
         member = ctx.message.author
 
-        embebInfo = discord.Embed(title="Procesando búsqueda en la guild", color=0xFFA500)
+        embebInfo = discord.Embed(title="Procesando búsqueda", color=0xFFA500)
         embebInfo.add_field(name="Buscando a:", value="{}".format(username), inline=False)
         embebInfo.add_field(name="Tiempo estimado", value="5 minutos", inline=False)
         embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -554,9 +555,18 @@ async def register(ctx, username):
                         await member.add_roles(role)
 
                         # Cambiar nombre
-                        await member.edit(nick="[{}] {}".format(registerAllianceTag ,player['Name']))
+                        try:
+                            await member.edit(nick="[{}] {}".format(registerAllianceTag ,player['Name']))
+                        except nextcord.errors.Forbidden:
+                            embebInfo = discord.Embed(title="Error de permisos", color=0xff0000)
+                            embebInfo.add_field(name="Permisos faltantes", value="Manage Nicknames, si eres un admin puede ser que el bot no tenga permisos de editar nicks a admins, pero si a usuarios básicos", inline=False)
+                            embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
 
-                                            # Nombre de las tablas según ID de la guild
+                            # Mensaje embebido avisando
+                            await ctx.send(embed=embebInfo)
+                            pass
+
+                        # Nombre de las tablas según ID de la guild
                         table_users = "registedUsers{}".format(DiscordGuildID)
 
                         con = sqlite3.connect('example.db')
@@ -599,10 +609,15 @@ async def register(ctx, username):
         # La API no está disponible
         else:
             # Mensaje embebido
-            embebFindAlliance = discord.Embed(title="La API no está disponible", color=0xFF0000)
-            embebFindAlliance.add_field(name="Error:", value="{}".format(response.status_code), inline=False)
+            embebFindAlliance = discord.Embed(title="Error al procesar la solicitud", color=0xFF0000)
+            embebFindAlliance.add_field(name="Info:", value="Inténtalo de nuevo", inline=False)
             # Mensaje embebido avisando
             await ctx.send(embed=embebFindAlliance)
+
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y | %H:%M:%S")
+
+            print("{} - API Error {}".format(dt_string, response.status_code))
 
 @bot.command(
     pass_context=True,
