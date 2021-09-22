@@ -52,9 +52,10 @@ python main.py
 
 - General
   - [X] Command timeouts
-  - [X] Unregister command (Para usuarios)
+  - [X] Unregister command
   - [X] Custom bot prefix
   - [X] Ignore DMs
+  - [X] Split commands into files
 
 - Database
   - [X] Create Database and table

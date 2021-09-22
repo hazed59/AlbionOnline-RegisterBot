@@ -76,7 +76,8 @@ async def on_guild_remove(guild):
 initial_extensions = [
                     'cogs.setup',
                     'cogs.register',
-                    'cogs.unregister'
+                    'cogs.unregister',
+                    'cogs.blacklist'
                     ]
 
 # Here we load our extensions(cogs) listed above in [initial_extensions].
