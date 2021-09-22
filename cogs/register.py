@@ -8,7 +8,7 @@ import nextcord
 import nextcord
 import sqlite3
 
-class RegisterCog(commands.Cog, name="Register Commands"):
+class RegisterCog(commands.Cog, name="Register Command"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -113,7 +113,7 @@ class RegisterCog(commands.Cog, name="Register Commands"):
                               DiscordGuildID = self.bot.get_guild(ctx.message.guild.id)
                               role = discord.utils.get(DiscordGuildID.roles, name="{}".format(registerGuildRol))
                               await member.add_roles(role)
-                            # TODO
+
                             except nextcord.errors.Forbidden:
                               embebPermissionError = discord.Embed(title="Error de permisos", color=0xff0000)
                               embebPermissionError.add_field(name="Permisos faltantes", value="***Manage rol***, si eres un admin puede ser que el bot no tenga permisos para asignar roles o que el rol de bot esté por debajo de los roles a asignar, asegurate que está por encima de los roles que quieres asignar")
@@ -241,8 +241,8 @@ class RegisterCog(commands.Cog, name="Register Commands"):
 
                 print("{} - API Error {}".format(dt_string, response.status_code))
 
-    @register.error
-    async def on_command_error(ctx, error):
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embebRegisterError = discord.Embed(title="Error", color=0xFF0000)
             embebRegisterError.add_field(name="Info:", value="Introduce un nombre de usuario", inline=False)
