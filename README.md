@@ -54,12 +54,13 @@ python main.py
   - [X] Command timeouts
   - [X] Unregister command (Para usuarios)
   - [X] Custom bot prefix
+  - [X] Ignore DMs
 
 - Database
   - [X] Create Database and table
   - [X] Clear guild in database on bot exist
 
-### TODO First ###
+### TODO First
 
 - [ ] blacklist command with reason
   - [ ] delete entry on database when blacklist
@@ -67,6 +68,7 @@ python main.py
 - [ ] Register command
   - [ ] Check if user its on blacklist
 - [ ] check command to see if blacklisted
+
 ### TODO Later
 
 - [ ] addGuild command
