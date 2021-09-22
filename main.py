@@ -338,5 +338,16 @@ if __name__ == '__main__':
             print(f'Failed to load extension {extension}.', file=sys.stderr)
             traceback.print_exc()
 
+# Help command in embeb
+class MyHelpCommand(commands.MinimalHelpCommand):
+    async def send_pages(self):
+        destination = self.get_destination()
+        e = discord.Embed(color=discord.Color.blurple(), description='')
+        for page in self.paginator.pages:
+            e.description += page
+        await destination.send(embed=e)
+
+bot.help_command = MyHelpCommand()
+
 # Token del bot a usar
 bot.run(TOKEN, reconnect=True)
