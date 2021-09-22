@@ -276,6 +276,7 @@ async def register(ctx, username):
             # Mensaje embebido
             embebFindAlliance = discord.Embed(title="Error al procesar la solicitud", color=0xFF0000)
             embebFindAlliance.add_field(name="Info:", value="Inténtalo de nuevo", inline=False)
+            embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebFindAlliance)
 
@@ -283,6 +284,15 @@ async def register(ctx, username):
             dt_string = now.strftime("%d/%m/%Y | %H:%M:%S")
 
             print("{} - API Error {}".format(dt_string, response.status_code))
+
+@register.error
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        embebRegisterError = discord.Embed(title="Error", color=0xFF0000)
+        embebRegisterError.add_field(name="Info:", value="Introduce un nombre de usuario", inline=False)
+        embebRegisterError.set_footer(text="Bot creado por: QueenMirna#9103")
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebRegisterError)
 
 @bot.command(
     pass_context=True,
