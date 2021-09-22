@@ -1,6 +1,11 @@
 import discord
 from discord.ext import commands
 import asyncio
+import sqlite3
+import requests
+import json
+from discord.utils import get
+
 
 class ConfigCog(commands.Cog, name="Config Commands"):
     def __init__(self, bot):
@@ -33,7 +38,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                 return msg.author == ctx.author and msg.channel == ctx.channel
             
             try:
-                msg = await bot.wait_for("message", check=check, timeout=30)
+                msg = await self.bot.wait_for("message", check=check, timeout=30)
                 botPrefixOk = True
                 botPrefixResponse = True
             except asyncio.TimeoutError:
@@ -56,7 +61,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                 return msg.author == ctx.author and msg.channel == ctx.channel
 
             try:
-                msg = await bot.wait_for("message", check=check, timeout=30)
+                msg = await self.bot.wait_for("message", check=check, timeout=30)
                 guildResponse = True
             except asyncio.TimeoutError:
                 await ctx.send("Terminado tiempo de espera, configuración cancelada")
@@ -85,7 +90,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                         msg.content.lower() in ["y", "n"]
 
                     try:
-                        msg = await bot.wait_for("message", check=check, timeout=30)
+                        msg = await self.bot.wait_for("message", check=check, timeout=30)
                         if msg.content.lower() == "y":
                             guildExist = True
                             guildResponse = True
@@ -115,7 +120,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                 return msg.author == ctx.author and msg.channel == ctx.channel
             
             try:
-                msg = await bot.wait_for("message", check=check, timeout=30)
+                msg = await self.bot.wait_for("message", check=check, timeout=30)
 
                 if len(msg.clean_content) == 3:
                     guildTag = True
@@ -142,7 +147,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                 return msg.author == ctx.author and msg.channel == ctx.channel
             
             try:
-                msg = await bot.wait_for("message", check=check, timeout=30)
+                msg = await self.bot.wait_for("message", check=check, timeout=30)
 
                 if get(ctx.guild.roles, name="{}".format(msg.content)):
                     guildRol = True
@@ -166,7 +171,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
             msg.content.lower() in ["y", "n"]
 
         try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
+            msg = await self.bot.wait_for("message", check=check, timeout=30)
             if msg.content.lower() == "y":
 
                 allianceExist = False
@@ -179,7 +184,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                         return msg.author == ctx.author and msg.channel == ctx.channel
 
                     try:
-                        msg = await bot.wait_for("message", check=check, timeout=30)
+                        msg = await self.bot.wait_for("message", check=check, timeout=30)
                         allianceResponse = True
                     except asyncio.TimeoutError:
                         await ctx.send("Terminado tiempo de espera, configuración cancelada")
@@ -209,7 +214,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                                 msg.content.lower() in ["y", "n"]
 
                             try:
-                                msg = await bot.wait_for("message", check=check, timeout=30)
+                                msg = await self.bot.wait_for("message", check=check, timeout=30)
                                 if msg.content.lower() == "y":
                                     allianceExist = True
                                     allianceResponse = True
@@ -239,7 +244,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                         return msg.author == ctx.author and msg.channel == ctx.channel
                     
                     try:
-                        msg = await bot.wait_for("message", check=check, timeout=30)
+                        msg = await self.bot.wait_for("message", check=check, timeout=30)
 
                         if get(ctx.guild.roles, name="{}".format(msg.content)):
                             allianceRol = True
@@ -323,7 +328,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
             msg.content.lower() in ["y", "n"]
 
         try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
+            msg = await self.bot.wait_for("message", check=check, timeout=30)
 
             if msg.content.lower() == "y":
 
