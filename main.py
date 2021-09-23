@@ -11,6 +11,13 @@ load_dotenv()
 # Get env var and save to var
 TOKEN = os.environ.get("TOKEN")
 
+table_users = "registeredUsers"
+table_config = "DiscordServersConfig"
+table_register = "registeredUser"
+table_registerInfo = "registeredInfo"
+table_blacklist = "blacklistUser"
+table_blacklistInfo = "blacklistInfo"
+
 def botPrefixes(bot, message):
 
     if (message.guild is None):
@@ -46,6 +53,60 @@ async def globally_block_dms(ctx):
 @bot.event
 async def on_ready():
     # Mensaje mostrando que está iniciado
+    con = sqlite3.connect('example.db')
+
+    # Create cursor
+    cur = con.cursor()
+
+    # Se pone "f" delante para que se reconozca las {} como variables
+    # Crear tabla de la configuración de la guild
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} 
+                (discordGuildId TEXT PRIMARY KEY,
+                botPrefix TEXT,
+                guildId TEXT,
+                guildTagString TEXT,
+                guildRol TEXT,
+                allianceId TEXT,
+                allianceTagString TEXT,
+                allianceRol TEXT)"""
+                )
+    
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_register} 
+            (userId TEXT PRIMARY KEY,
+            albionNick TEXT
+            )"""
+            )
+
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_registerInfo} 
+            (discordGuildiD TEXT PRIMARY KEY,
+            userId TEXT,
+            FOREIGN KEY (userId) REFERENCES {table_register} (userId),
+            FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
+            )"""
+            )
+
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklist} 
+            (blacklistUserId INTEGER PRIMARY KEY AUTOINCREMENT,
+            discordGuildiD TEXT,
+            reason TEXT,
+            albionNick,
+            FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
+            )"""
+            )
+
+    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklistInfo} 
+            (blacklistUserId INTEGER PRIMARY KEY,
+            userId TEXT,
+            FOREIGN KEY (userId) REFERENCES {table_register} (userId),
+            FOREIGN KEY (blacklistUserId) REFERENCES {table_blacklist} (discordGuildiD)
+            )"""
+            )
+    
+    con.commit()
+
+    # Cerrar conexión
+    con.close()
+
     print('Logged in as {0.user}'.format(bot))
 
 @bot.event
