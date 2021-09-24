@@ -11,6 +11,7 @@ load_dotenv()
 # Get env var and save to var
 TOKEN = os.environ.get("TOKEN")
 
+dbName = "example.db"
 table_users = "registeredUsers"
 table_config = "DiscordServersConfig"
 table_register = "registeredUser"
@@ -27,7 +28,7 @@ def botPrefixes(bot, message):
 
         DiscordGuildID = message.guild.id
 
-        con = sqlite3.connect('example.db')
+        con = sqlite3.connect('{}'.format(dbName))
 
         cur = con.cursor()
 
@@ -53,7 +54,7 @@ async def globally_block_dms(ctx):
 @bot.event
 async def on_ready():
     # Mensaje mostrando que está iniciado
-    con = sqlite3.connect('example.db')
+    con = sqlite3.connect('{}'.format(dbName))
 
     # Create cursor
     cur = con.cursor()
@@ -118,7 +119,7 @@ async def on_guild_remove(guild):
 
     table_users = "registeredUsers{}".format(DiscordGuildID)
 
-    con = sqlite3.connect('example.db')
+    con = sqlite3.connect('{}'.format(dbName))
 
     cur = con.cursor()
 
