@@ -62,7 +62,7 @@ async def on_ready():
     # Se pone "f" delante para que se reconozca las {} como variables
     # Crear tabla de la configuración de la guild
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} 
-                (discordGuildId TEXT PRIMARY KEY,
+                (discordGuildId INTEGER PRIMARY KEY,
                 botPrefix TEXT,
                 guildId TEXT,
                 guildTagString TEXT,
@@ -73,14 +73,14 @@ async def on_ready():
                 )
     
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_register} 
-            (userId TEXT PRIMARY KEY,
+            (userId INTEGER PRIMARY KEY,
             albionNick TEXT
             )"""
             )
 
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_registerInfo} 
-            (discordGuildiD TEXT PRIMARY KEY,
-            userId TEXT,
+            (discordGuildiD INTEGER PRIMARY KEY,
+            userId INTEGER,
             FOREIGN KEY (userId) REFERENCES {table_register} (userId),
             FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
             )"""
@@ -88,16 +88,16 @@ async def on_ready():
 
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklist} 
             (blacklistUserId INTEGER PRIMARY KEY AUTOINCREMENT,
-            discordGuildiD TEXT,
+            discordGuildiD INTEGER,
             reason TEXT,
-            albionNick,
+            albionNick TEXT,
             FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
             )"""
             )
 
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklistInfo} 
             (blacklistUserId INTEGER PRIMARY KEY,
-            userId TEXT,
+            userId INTEGER,
             FOREIGN KEY (userId) REFERENCES {table_register} (userId),
             FOREIGN KEY (blacklistUserId) REFERENCES {table_blacklist} (discordGuildiD)
             )"""
@@ -131,7 +131,6 @@ async def on_guild_remove(guild):
     con.commit()
 
     con.close()
-
 
 # Below cogs represents our folder our cogs are in. Following is the file name. So 'setup.py' in cogs, would be cogs.setup
 # Think of it like a dot path import
