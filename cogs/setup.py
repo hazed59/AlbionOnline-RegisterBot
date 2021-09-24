@@ -339,18 +339,6 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                 cur = con.cursor()
 
                 # Se pone "f" delante para que se reconozca las {} como variables
-                # Crear tabla de la configuración de la guild
-                cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_config} 
-                            (discordGuildId TEXT PRIMARY KEY,
-                            botPrefix TEXT,
-                            guildId TEXT,
-                            guildTagString TEXT,
-                            guildRol TEXT,
-                            allianceId TEXT,
-                            allianceTagString TEXT,
-                            allianceRol TEXT)"""
-                            )
-
                 # Insertar datos en la tabla
                 if allianceExist:
                     cur.execute(f"""INSERT INTO {table_config} (
@@ -391,9 +379,6 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                     guildRol="{guildRol}"
                     """, (DiscordGuildID, guildId, botPrefix, guildTagString, guildRol)
                     )
-
-                # Crear tabla de usuarios registrados de la guild
-                cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_users} (userid text, albionnick text);""")
                 
                 # Guardar cambios
                 con.commit()
