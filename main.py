@@ -12,12 +12,9 @@ load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 
 dbName = "example.db"
-table_users = "registeredUsers"
-table_config = "DiscordServersConfig"
-table_register = "registeredUser"
-table_registerInfo = "registeredInfo"
-table_blacklist = "blacklistUser"
-table_blacklistInfo = "blacklistInfo"
+table_config = "discordServersConfig"
+table_register = "user"
+table_blacklist = "blacklist"
 
 def botPrefixes(bot, message):
 
@@ -65,10 +62,10 @@ async def on_ready():
                 (discordGuildId INTEGER PRIMARY KEY,
                 botPrefix TEXT,
                 guildId TEXT,
-                guildTagString TEXT,
+                guildTag TEXT,
                 guildRol TEXT,
                 allianceId TEXT,
-                allianceTagString TEXT,
+                allianceTag TEXT,
                 allianceRol TEXT)"""
                 )
     
@@ -78,28 +75,11 @@ async def on_ready():
             )"""
             )
 
-    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_registerInfo} 
-            (discordGuildiD INTEGER PRIMARY KEY,
-            userId INTEGER,
-            FOREIGN KEY (userId) REFERENCES {table_register} (userId),
-            FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
-            )"""
-            )
-
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklist} 
-            (blacklistUserId INTEGER PRIMARY KEY AUTOINCREMENT,
-            discordGuildiD INTEGER,
-            reason TEXT,
+            (discordGuildiD INTEGER,
             albionNick TEXT,
+            reason TEXT,
             FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
-            )"""
-            )
-
-    cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklistInfo} 
-            (blacklistUserId INTEGER PRIMARY KEY,
-            userId INTEGER,
-            FOREIGN KEY (userId) REFERENCES {table_register} (userId),
-            FOREIGN KEY (blacklistUserId) REFERENCES {table_blacklist} (discordGuildiD)
             )"""
             )
     
