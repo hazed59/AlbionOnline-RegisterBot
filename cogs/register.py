@@ -243,7 +243,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                 print("{} - API Error {}".format(dt_string, response.status_code))
 
-    @commands.Cog.listener()
+    @register.error
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embebRegisterError = discord.Embed(title="Error", color=0xFF0000)
