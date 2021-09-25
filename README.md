@@ -49,6 +49,12 @@ python main.py
   - [X] Change nickname
   - [X] Store users in guild database
   - [X] Update sql SELECT to get data from GUILD instead of return every value and get first
+  - [X] Check if user its on blacklist
+- Blacklist command
+  - [X] blacklist command with reason
+- Unblacklist
+  - [X] unblacklist (Only for manage rol users)
+  - [X] Register command
 
 - General
   - [X] Command timeouts
@@ -63,12 +69,9 @@ python main.py
 
 ### TODO First
 
-- [ ] blacklist command with reason
-  - [ ] delete entry on database when blacklist
-- [ ] unblacklist (Only for manage rol users)
-- [ ] Register command
-  - [ ] Check if user its on blacklist
 - [ ] check command to see if blacklisted
+- [ ] Clear blacklist table on guild exist
+- [ ] Improve/Reorder register checks remove from if/else to be more "modular"
 
 ### TODO Later
 
