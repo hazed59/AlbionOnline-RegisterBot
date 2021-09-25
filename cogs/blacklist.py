@@ -23,8 +23,11 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
         name="blacklist",
         pass_context=True,
         brief="Blacklist an user on the guild.",
-        help="Blacklist Albion Nickname.\nExameple: !blacklist QueenMirna"
+        help="Blacklist Albion Nickname.\nExameple: !blacklist"
     )
+    @commands.has_permissions(
+                              manage_roles=True
+                              )
     async def blacklist(self, ctx):
 
         DiscordGuildID = ctx.message.guild.id
@@ -77,34 +80,33 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
         else:
             return
 
-        # con = sqlite3.connect(dbName)
+        con = sqlite3.connect(dbName)
 
-        # Create cursor
-        # cur = con.cursor()
+        cur = con.cursor()
 
-        # try:
-        #     checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick={albionNick} AND discordGuildIdFK={DiscordGuildID}""")
-        # except Exception as e:
-        #     checkUser = False
-        #     print(e)
-        #     pass
+        checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
 
-        # if not checkUser:
-        # cur.execute(f"""INSERT INTO {table_blacklist} (
-        #     discordGuildIdFK,
-        #     albionNick,
-        #     reason)
-        #     VALUES (?, ?, ?)""", (DiscordGuildID, albionNick, reason))
-        # else:
-        #     cur.execute(f"""UPDATE {table_blacklist} SET 
-        #         reason = {reason}
-        #         WHERE albionNick={albionNick} AND discordGuildIdFK={DiscordGuildID}""")
+        if checkUser == []:
+            cur.execute(f"""INSERT INTO {table_blacklist} (
+                discordGuildIdFK,
+                albionNick,
+                reason)
+                VALUES (?, ?, ?)""", (DiscordGuildID, albionNick, reason))
+        else:
+            cur.execute(f"""UPDATE {table_blacklist} SET 
+                reason = '{reason}'
+                WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""")
         
-        # con.commit()
+        con.commit()
 
-        # con.close()
+        con.close()
 
-        await ctx.send("El jugador **{}** ha sido añadido a la list negra con la siguiente razón: {}".format(albionNick, reason))
+        embebBlacklistInfo = discord.Embed(title="Blacklist", color=0x00ff00)
+        embebBlacklistInfo.add_field(name="Usuario añadido:", value="{}".format(albionNick), inline=False)
+        embebBlacklistInfo.add_field(name="Razón:", value="{}".format(reason), inline=False)
+        embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
+        # Mensaje embebido avisando
+        await ctx.send(embed=embebBlacklistInfo)
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case MembersCog.
 # When we load the cog, we use the name of the file.
