@@ -1,6 +1,19 @@
 from discord.ext import commands
 import discord
 import sqlite3
+import os
+import asyncio
+from dotenv import load_dotenv
+# Load env variables file
+load_dotenv()
+
+# Get env var and save to var
+TOKEN = os.environ.get("TOKEN")
+
+dbName = os.environ.get("DBNAME")
+table_config = os.environ.get("TABLE_CONFIG")
+table_register = os.environ.get("TABLE_USER")
+table_blacklist = os.environ.get("TABLE_BLACKLIST")
 
 class BlacklistCog(commands.Cog, name="Blacklist Command"):
     def __init__(self, bot):
@@ -12,8 +25,86 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
         brief="Blacklist an user on the guild.",
         help="Blacklist Albion Nickname.\nExameple: !blacklist QueenMirna"
     )
-    async def blacklist(self, ctx, username):
-      print('TODO')
+    async def blacklist(self, ctx):
+
+        DiscordGuildID = ctx.message.guild.id
+
+        albionNickOk = False
+        
+        while not albionNickOk:
+            await ctx.send("Introduce el nick del jugador")
+
+            # This will make sure that the response will only be registered if the following
+            # conditions are met:
+            def check(msg):
+                return msg.author == ctx.author and msg.channel == ctx.channel
+            
+            try:
+                msg = await self.bot.wait_for("message", check=check, timeout=30)
+                albionNickOk = True
+                botPrefixResponse = True
+            except asyncio.TimeoutError:
+                await ctx.send("Terminado tiempo de espera, configuración cancelada")
+                albionNickOk = True
+                botPrefixResponse = False
+
+        if botPrefixResponse:
+            albionNick = msg.content
+        else:
+            return
+
+        reasonOK = False
+        
+        while not reasonOK:
+            await ctx.send("Introduce la razón")
+
+            # This will make sure that the response will only be registered if the following
+            # conditions are met:
+            def check(msg):
+                return msg.author == ctx.author and msg.channel == ctx.channel
+            
+            try:
+                msg = await self.bot.wait_for("message", check=check, timeout=30)
+                reasonOK = True
+                reasonResponse = True
+            except asyncio.TimeoutError:
+                await ctx.send("Terminado tiempo de espera, configuración cancelada")
+                reasonOK = True
+                reasonResponse = False
+
+        if reasonResponse:
+            reason = msg.content
+        else:
+            return
+
+        # con = sqlite3.connect(dbName)
+
+        # Create cursor
+        # cur = con.cursor()
+
+        # try:
+        #     checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick={albionNick} AND discordGuildIdFK={DiscordGuildID}""")
+        # except Exception as e:
+        #     checkUser = False
+        #     print(e)
+        #     pass
+
+        # if not checkUser:
+        # cur.execute(f"""INSERT INTO {table_blacklist} (
+        #     discordGuildIdFK,
+        #     albionNick,
+        #     reason)
+        #     VALUES (?, ?, ?)""", (DiscordGuildID, albionNick, reason))
+        # else:
+        #     cur.execute(f"""UPDATE {table_blacklist} SET 
+        #         reason = {reason}
+        #         WHERE albionNick={albionNick} AND discordGuildIdFK={DiscordGuildID}""")
+        
+        # con.commit()
+
+        # con.close()
+
+        await ctx.send("El jugador **{}** ha sido añadido a la list negra con la siguiente razón: {}".format(albionNick, reason))
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case MembersCog.
 # When we load the cog, we use the name of the file.
