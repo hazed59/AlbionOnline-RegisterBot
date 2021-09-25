@@ -42,6 +42,23 @@ class RegisterCog(commands.Cog, name="Register Command"):
             checkUser = False
             pass
             
+        checkBlacklist = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{username}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
+
+        if checkBlacklist != []:
+
+            reason = cur.execute(f"""SELECT reason FROM {table_blacklist} WHERE albionNick='{username}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()[0][0]
+
+            embebBlacklistInfo = discord.Embed(title="Usuario blacklisteado", color=0xFF0000)
+            embebBlacklistInfo.add_field(name="Usuario:", value="{}".format(username), inline=False)
+            embebBlacklistInfo.add_field(name="Razón:", value="{}".format(reason), inline=False)
+            embebBlacklistInfo.add_field(name="Info:", value="Si crees que es un error, contacta con un oficial.", inline=False)
+            embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
+            # Mensaje embebido avisando
+            await ctx.send(embed=embebBlacklistInfo)
+
+            con.close()
+            
+            return
 
         if checkUser:
             checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
