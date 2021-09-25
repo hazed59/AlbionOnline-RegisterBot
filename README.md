@@ -71,9 +71,12 @@ python main.py
 
 - [ ] check command to see if blacklisted
 - [ ] Clear blacklist table on guild exist
-- [ ] Improve/Reorder register checks remove from if/else to be more "modular"
+- [ ] utc command
+  - [ ] Print utc hour
 
 ### TODO Later
+
+- [ ] Improve/Reorder register checks remove from if/else to be more "modular"
 
 - [ ] addGuild command
   - [ ] Add Guild to exit field (separator a ',')
