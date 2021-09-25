@@ -11,10 +11,10 @@ load_dotenv()
 # Get env var and save to var
 TOKEN = os.environ.get("TOKEN")
 
-dbName = "example.db"
-table_config = "discordServersConfig"
-table_register = "user"
-table_blacklist = "blacklist"
+dbName = os.environ.get("DBNAME")
+table_config = os.environ.get("TABLE_CONFIG")
+table_register = os.environ.get("TABLE_USER")
+table_blacklist = os.environ.get("TABLE_BLACKLIST")
 
 def botPrefixes(bot, message):
 
@@ -71,15 +71,17 @@ async def on_ready():
     
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_register} 
             (userId INTEGER PRIMARY KEY,
-            albionNick TEXT
+            discordGuildIdFK INTEGER,
+            albionNick TEXT,
+            FOREIGN KEY (discordGuildIdFK) REFERENCES {table_config} (discordGuildId)
             )"""
             )
 
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_blacklist} 
-            (discordGuildiD INTEGER,
+            (discordGuildIdFK INTEGER,
             albionNick TEXT,
             reason TEXT,
-            FOREIGN KEY (discordGuildiD) REFERENCES {table_config} (discordGuildiD)
+            FOREIGN KEY (discordGuildIdFK) REFERENCES {table_config} (discordGuildId)
             )"""
             )
     

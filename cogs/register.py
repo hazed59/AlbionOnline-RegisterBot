@@ -5,8 +5,16 @@ import requests
 import json
 from datetime import datetime
 import nextcord
-import nextcord
 import sqlite3
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+dbName = os.environ.get("DBNAME")
+table_config = os.environ.get("TABLE_CONFIG")
+table_register = os.environ.get("TABLE_USER")
+table_blacklist = os.environ.get("TABLE_BLACKLIST")
 
 class RegisterCog(commands.Cog, name="Register Command"):
     def __init__(self, bot):
@@ -22,22 +30,21 @@ class RegisterCog(commands.Cog, name="Register Command"):
     async def register(self, ctx, username):
 
         memberId = ctx.message.author.id
-        con = sqlite3.connect('example.db')
+        con = sqlite3.connect(dbName)
 
         cur = con.cursor()
 
         DiscordGuildID = ctx.message.guild.id
-        table_users = "registeredUsers{}".format(DiscordGuildID)
 
         try:
-            checkUser = cur.execute(f"""SELECT userid FROM {table_users} where userid={memberId}""").fetchall()[0][0]
+            checkUser = cur.execute(f"""SELECT userid FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
         except (IndexError, sqlite3.OperationalError):
             checkUser = False
             pass
             
 
         if checkUser:
-            checkNick = cur.execute(f"""SELECT albionnick FROM {table_users} where userid={memberId}""").fetchall()[0][0]
+            checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
 
             embebInfo = discord.Embed(title="Ya estás registrado", color=0xff0000)
             embebInfo.add_field(name="Registrado con el usuario", value="{}".format(checkNick), inline=False)
@@ -52,16 +59,16 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
         else:
 
-            con = sqlite3.connect('example.db')
+            con = sqlite3.connect(dbName)
 
             cur = con.cursor()
 
             try:
                 registerGuildId = cur.execute(f"""SELECT guildId FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerGuildTag = cur.execute(f"""SELECT guildTagString FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerGuildTag = cur.execute(f"""SELECT guildTag FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
                 registerGuildRol = cur.execute(f"""SELECT guildRol FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
                 registerAllianceId = cur.execute(f"""SELECT allianceId FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerAllianceTag = cur.execute(f"""SELECT allianceTagString FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerAllianceTag = cur.execute(f"""SELECT allianceTag FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
                 registerAllianceRol = cur.execute(f"""SELECT allianceRol FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
             except (sqlite3.OperationalError, IndexError):
                 await ctx.send("El bot aún no está configurado, use !setup para configurarlo, si no tiene permisos, contacte con el administrador.")
@@ -137,10 +144,8 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                             # Guardar la ID de la guild
                             DiscordGuildID = ctx.message.guild.id
-                            # Nombre de las tablas según ID de la guild
-                            table_users = "registeredUsers{}".format(DiscordGuildID)
 
-                            con = sqlite3.connect('example.db')
+                            con = sqlite3.connect(dbName)
 
                             # Create cursor
                             cur = con.cursor()
@@ -148,7 +153,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                             memberId = ctx.message.author.id
                             # Se pone "f" delante para que se reconozca las {} como variables
                             # Insertar datos en la tabla
-                            cur.execute(f"""INSERT INTO {table_users} (userid, albionnick) values (?, ?)""", (memberId, username))
+                            cur.execute(f"""INSERT INTO {table_register} (userid, discordGuildIdFK, albionnick) values (?, ?, ?)""", (memberId, DiscordGuildID, username))
                             
                             # Guardar cambios
                             con.commit()
@@ -187,10 +192,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                                 await ctx.send(embed=embebInfo)
                                 pass
 
-                            # Nombre de las tablas según ID de la guild
-                            table_users = "registeredUsers{}".format(DiscordGuildID)
-
-                            con = sqlite3.connect('example.db')
+                            con = sqlite3.connect(dbName)
 
                             # Create cursor
                             cur = con.cursor()
@@ -198,7 +200,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                             memberId = ctx.message.author.id
                             # Se pone "f" delante para que se reconozca las {} como variables
                             # Insertar datos en la tabla
-                            cur.execute(f"""INSERT INTO {table_users} (userid, albionnick) values (?, ?)""", (memberId, username))
+                            cur.execute(f"""INSERT INTO {table_register} (userid, discordGuildIdFK, albionnick) values (?, ?, ?)""", (memberId, DiscordGuildID, username))
                             
                             # Guardar cambios
                             con.commit()

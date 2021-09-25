@@ -5,7 +5,15 @@ import sqlite3
 import requests
 import json
 from discord.utils import get
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+dbName = os.environ.get("DBNAME")
+table_config = os.environ.get("TABLE_CONFIG")
+table_register = os.environ.get("TABLE_USER")
+table_blacklist = os.environ.get("TABLE_BLACKLIST")
 
 class ConfigCog(commands.Cog, name="Config Commands"):
     def __init__(self, bot):
@@ -24,11 +32,9 @@ class ConfigCog(commands.Cog, name="Config Commands"):
     async def setup(self, ctx):
         # Guardar la ID de la guild
         DiscordGuildID = ctx.message.guild.id
-        # Nombre de las tablas según ID de la guild
-        table_users = "registeredUsers{}".format(DiscordGuildID)
-        table_config = "DiscordServersConfig"
 
         botPrefixOk = False
+        
         while not botPrefixOk:
             await ctx.send("Introduce el prefijo del bot")
 
@@ -333,7 +339,7 @@ class ConfigCog(commands.Cog, name="Config Commands"):
             if msg.content.lower() == "y":
 
                 #Conectar a la base de datos, se creará si no existe
-                con = sqlite3.connect('example.db')
+                con = sqlite3.connect(dbName)
 
                 # Create cursor
                 cur = con.cursor()
@@ -345,39 +351,39 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                         discordGuildId,
                         botPrefix,
                         guildId,
-                        guildTagString,
+                        guildTag,
                         guildRol,
                         allianceId,
-                        allianceTagString,
+                        allianceTag,
                         allianceRol) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(discordGuildId) DO UPDATE SET
                     discordGuildId="{DiscordGuildID}",
                     botPrefix="{botPrefix}",
                     guildId="{guildId}",
-                    guildTagString="{guildTagString}",
+                    guildTag="{guildTagString}",
                     guildRol="{guildRol}",
                     allianceId="{allianceId}",
-                    allianceTagString="{ alliance_data_json['AllianceTag']}",
+                    allianceTag="{ alliance_data_json['AllianceTag']}",
                     allianceRol="{allianceRol}"
                     """, (DiscordGuildID, botPrefix, guildId, guildTagString, guildRol, allianceId, alliance_data_json['AllianceTag'], allianceRol)
                     )
                 else:
                     cur.execute(f"""INSERT INTO {table_config} (
                         discordGuildId,
-                        guildId,
                         botPrefix,
-                        guildTagString,
+                        guildId,
+                        guildTag,
                         guildRol,
                         allianceId,
-                        allianceTagString,
+                        allianceTag,
                         allianceRol) 
                     VALUES (?, ?, ?, ?, ?, 'none', 'none', 'none') ON CONFLICT(discordGuildId) DO UPDATE SET
                     discordGuildId="{DiscordGuildID}",
                     botPrefix="{botPrefix}",
                     guildId="{guildId}",
-                    guildTagString="{guildTagString}",
+                    guildTag="{guildTagString}",
                     guildRol="{guildRol}"
-                    """, (DiscordGuildID, guildId, botPrefix, guildTagString, guildRol)
+                    """, (DiscordGuildID, botPrefix, guildId, guildTagString, guildRol)
                     )
                 
                 # Guardar cambios

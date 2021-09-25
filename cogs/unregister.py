@@ -1,6 +1,15 @@
 from discord.ext import commands
 import sqlite3
 import discord
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+dbName = os.environ.get("DBNAME")
+table_config = os.environ.get("TABLE_CONFIG")
+table_register = os.environ.get("TABLE_USER")
+table_blacklist = os.environ.get("TABLE_BLACKLIST")
 
 class UnregisterCog(commands.Cog, name="Unregister Command"):
     def __init__(self, bot):
@@ -15,20 +24,19 @@ class UnregisterCog(commands.Cog, name="Unregister Command"):
     async def unregister(self, ctx):
 
         memberId = ctx.message.author.id
-        con = sqlite3.connect('example.db')
+        con = sqlite3.connect(dbName)
 
         cur = con.cursor()
 
         DiscordGuildID = ctx.message.guild.id
-        table_users = "registeredUsers{}".format(DiscordGuildID)
 
-        checkUser = cur.execute(f"""SELECT userid FROM {table_users} where userid={memberId}""").fetchall()
+        checkUser = cur.execute(f"""SELECT userid FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()
 
         if len(checkUser) > 0:
 
-            checkNick = cur.execute(f"""SELECT albionnick FROM {table_users}""").fetchall()[0][0]
+            checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
 
-            cur.execute(f"""DELETE FROM {table_users} where userid={memberId}""")
+            cur.execute(f"""DELETE FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""")
 
             embebInfo = discord.Embed(title="Registro eliminado", color=0xff0000)
             embebInfo.add_field(name="Eliminado tu nick asociado", value="{}".format(checkNick), inline=False)
