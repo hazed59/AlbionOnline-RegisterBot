@@ -19,7 +19,6 @@ class UnregisterCog(commands.Cog, name="Unregister Command"):
         pass_context=True,
         brief="Unregister user on the guild.",
         help="Unregister user on the guild.\nExameple: !unregister",
-        cog_name="Register Commands"
     )
     async def unregister(self, ctx):
 

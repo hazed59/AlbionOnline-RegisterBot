@@ -121,7 +121,8 @@ initial_extensions = [
                     'cogs.register',
                     'cogs.unregister',
                     'cogs.blacklist',
-                    'cogs.unblacklist'
+                    'cogs.unblacklist',
+                    'cogs.utc'
                     ]
 
 # Here we load our extensions(cogs) listed above in [initial_extensions].
