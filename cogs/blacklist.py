@@ -4,6 +4,7 @@ import sqlite3
 import os
 import asyncio
 from dotenv import load_dotenv
+from datetime import datetime,timezone
 # Load env variables file
 load_dotenv()
 
@@ -86,16 +87,26 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
 
         checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
 
+        date = datetime.now(timezone.utc).strftime("%m/%d/%Y")
+        authorId = ctx.author.mention
+        authorNick = ctx.message.author.display_name
+
         if checkUser == []:
             cur.execute(f"""INSERT INTO {table_blacklist} (
                 discordGuildIdFK,
                 albionNick,
-                reason)
-                VALUES (?, ?, ?)""", (DiscordGuildID, albionNick, reason))
+                reason,
+                date,
+                authorId,
+                authorNick)
+                VALUES (?, ?, ?, ?, ?, ?)""", (DiscordGuildID, albionNick, reason, date, authorId, authorNick))
         else:
-            cur.execute(f"""UPDATE {table_blacklist} SET 
-                reason = '{reason}'
-                WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""")
+            
+            embebBlacklistInfo = discord.Embed(title="Error", color=0x00ff00)
+            embebBlacklistInfo.add_field(name="Ya está en la blacklist", value="{}".format(albionNick), inline=False)
+            embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
+            # Mensaje embebido avisando
+            await ctx.send(embed=embebBlacklistInfo)
         
         con.commit()
 

@@ -81,6 +81,9 @@ async def on_ready():
             (discordGuildIdFK INTEGER,
             albionNick TEXT,
             reason TEXT,
+            date TEXT,
+            authorId INT,
+            authorNick TEXT,
             FOREIGN KEY (discordGuildIdFK) REFERENCES {table_config} (discordGuildId)
             )"""
             )
@@ -118,7 +121,8 @@ initial_extensions = [
                     'cogs.unregister',
                     'cogs.blacklist',
                     'cogs.unblacklist',
-                    'cogs.utc'
+                    'cogs.utc',
+                    'cogs.check'
                     ]
 
 # Here we load our extensions(cogs) listed above in [initial_extensions].
