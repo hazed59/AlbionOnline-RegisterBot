@@ -81,12 +81,12 @@ class RegisterCog(commands.Cog, name="Register Command"):
             cur = con.cursor()
 
             try:
-                registerGuildId = cur.execute(f"""SELECT guildId FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerGuildTag = cur.execute(f"""SELECT guildTag FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerGuildRol = cur.execute(f"""SELECT guildRol FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerAllianceId = cur.execute(f"""SELECT allianceId FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerAllianceTag = cur.execute(f"""SELECT allianceTag FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
-                registerAllianceRol = cur.execute(f"""SELECT allianceRol FROM DiscordServersConfig where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerGuildId = cur.execute(f"""SELECT guildId FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerGuildTag = cur.execute(f"""SELECT guildTag FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerGuildRol = cur.execute(f"""SELECT guildRol FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerAllianceId = cur.execute(f"""SELECT allianceId FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerAllianceTag = cur.execute(f"""SELECT allianceTag FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
+                registerAllianceRol = cur.execute(f"""SELECT allianceRol FROM {table_config} where discordGuildId={DiscordGuildID}""").fetchall()[0][0]
             except (sqlite3.OperationalError, IndexError):
                 await ctx.send("El bot aún no está configurado, use !setup para configurarlo, si no tiene permisos, contacte con el administrador.")
                 return
@@ -103,7 +103,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
             # Mensaje embebido avisando
             await ctx.send(embed=embebInfo)
 
-            # # Petición a la url, y guarda la respuesta
+            # Petición a la url, y guarda la respuesta
             # API que se usará, con parametrización del usuario
             url = 'https://gameinfo.albiononline.com/api/gameinfo/search?q={}'.format(username)
             response = requests.get(url)
@@ -183,11 +183,15 @@ class RegisterCog(commands.Cog, name="Register Command"):
                         # INFO - Alliance
                         if player['Name'].lower() == username.lower() and player["AllianceId"] == registerAllianceId:
                             exist = True
+
+                            registerAllianceGuildTag = player['GuildName']
+                            registerAllianceGuildTagFirstChars = registerAllianceGuildTag[0:4]
+
                             # Mensaje embebido
                             embebFindAlliance = discord.Embed(title="Jugador encontrado", color=0x8c004b)
                             embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
                             embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(registerAllianceRol), inline=False)
-                            embebFindAlliance.add_field(name="Nick actualizado a:", value="[{}] {}".format(registerAllianceTag ,player['Name']), inline=False)
+                            embebFindAlliance.add_field(name="Nick actualizado a:", value="[{}] [{}] {}".format(registerAllianceTag, registerAllianceGuildTagFirstChars,player['Name']), inline=False)
                             embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
                             # Mensaje embebido avisando
                             await ctx.send(embed=embebFindAlliance)
@@ -199,7 +203,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                             # Cambiar nombre
                             try:
-                                await member.edit(nick="[{}] {}".format(registerAllianceTag ,player['Name']))
+                                await member.edit(nick="[{}] [{}] {}".format(registerAllianceTag, registerAllianceGuildTagFirstChars.upper(), player['Name']))
                             except nextcord.errors.Forbidden:
                                 embebInfo = discord.Embed(title="Error de permisos", color=0xff0000)
                                 embebInfo.add_field(name="Permisos faltantes", value="Manage Nicknames, si eres un admin puede ser que el bot no tenga permisos de editar nicks a admins, pero si a usuarios básicos", inline=False)

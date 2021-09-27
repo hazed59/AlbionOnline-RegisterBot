@@ -50,12 +50,13 @@ python main.py
   - [X] Store users in guild database
   - [X] Update sql SELECT to get data from GUILD instead of return every value and get first
   - [X] Check if user its on blacklist
-- Blacklist command
+- Blacklist
   - [X] blacklist command with reason
 - Unblacklist
   - [X] unblacklist (Only for manage rol users)
   - [X] Register command
-
+- UTC
+  - [X] Print UTC hour
 - General
   - [X] Command timeouts
   - [X] Unregister command
@@ -69,10 +70,9 @@ python main.py
 
 ### TODO First
 
+- [ ] Fix alliance query on users table
 - [ ] check command to see if blacklisted
 - [ ] Clear blacklist table on guild exist
-- [ ] utc command
-  - [ ] Print utc hour
 
 ### TODO Later
 

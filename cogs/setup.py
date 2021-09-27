@@ -128,12 +128,12 @@ class ConfigCog(commands.Cog, name="Config Commands"):
             try:
                 msg = await self.bot.wait_for("message", check=check, timeout=30)
 
-                if len(msg.clean_content) == 3:
+                if len(msg.clean_content) <= 4:
                     guildTag = True
                     guildTagResponse = True
                     guildTagString = msg.content
                 else:
-                    await ctx.send("El TAG debe ser de 3 caracteres")
+                    await ctx.send("El TAG debe ser de máximo 4 caracteres")
                     guildTagResponse = False
             except asyncio.TimeoutError:
                 await ctx.send("Terminado tiempo de espera, configuración cancelada")
@@ -263,33 +263,6 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                         await ctx.send("Terminado tiempo de espera, configuración cancelada")
                         allianceRol = True
                         allianceRolResponse = False
-                
-                # allianceTag = False
-                # while not allianceTag:
-                #     await ctx.send("Introduce el TAG de la Alianza")
-
-                #     # This will make sure that the response will only be registered if the following
-                #     # conditions are met:
-                #     def check(msg):
-                #         return msg.author == ctx.author and msg.channel == ctx.channel
-                    
-                #     try:
-                #         msg = await bot.wait_for("message", check=check, timeout=30)
-
-                #         if len(msg.clean_content) > 4:
-                #             allianceTag = True
-                #             allianceTagResponse = True
-                #             allianceTagString = msg.content
-                #         else:
-                #             await ctx.send("El TAG no debe ser mayor de 4 caracteres")
-                #             allianceTagResponse = False
-                #     except asyncio.TimeoutError:
-                #         await ctx.send("Terminado tiempo de espera, configuración cancelada")
-                #         allianceTag = True
-                #         allianceTagResponse = False
-
-                # if not allianceTagResponse:
-                #     return
 
                 if not allianceRolResponse:
                     return
