@@ -16,8 +16,7 @@ class utcCog(commands.Cog, name="utc Command"):
       
         now_utc = datetime.now(timezone.utc).strftime("%H:%M:%S")
 
-        utcTime = discord.Embed(description="⏰  Time now: {}".format(now_utc))
-        utcTime.set_footer(text="Bot creado por: QueenMirna#9103")
+        utcTime = discord.Embed(description="⏰ UTC time now: {}".format(now_utc))
 
         await ctx.send(embed=utcTime)
 
