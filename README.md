@@ -72,16 +72,17 @@ python main.py
 
 ### TODO First
 
-- Blacklist
-  - [ ] Add Date in database
-  - [ ] Add user who banned him
-- Database
-  - [ ] Add fields to table
-    - [ ] Date
-    - [ ] User who blacklist him
 - [ ] Unregister command for users with manage roles
 - [ ] check command to see if blacklisted
 - [ ] Clear blacklist table on guild exist
+- Blacklist
+  - [ ] Check if user its already banned and give the info
+  - [ ] Add Date in database
+  - [ ] Add user who banned him
+- Database
+  - [ ] Add fields to blacklist
+    - [ ] Date
+    - [ ] User who blacklist him
 
 ### TODO Later
 
