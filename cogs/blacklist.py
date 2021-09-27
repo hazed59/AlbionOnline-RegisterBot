@@ -87,7 +87,7 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
 
         checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
 
-        date = datetime.now(timezone.utc).strftime("%m/%d/%Y")
+        date = datetime.now(timezone.utc).strftime("%d/%m/%Y")
         authorId = ctx.author.mention
         authorNick = ctx.message.author.display_name
 
