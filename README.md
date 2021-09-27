@@ -85,6 +85,7 @@ python main.py
 
 ### TODO First
 
+- [ ] Language support
 - [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
 - [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
 
