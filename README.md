@@ -67,10 +67,12 @@ python main.py
 - Database
   - [X] Create Database and table
   - [X] Clear guild in database on bot exist
+  - [X] Fix alliance query on users table
+  - [X] Fix clear users when bot leaves guild
 
 ### TODO First
 
-- [ ] Fix alliance query on users table
+- [ ] Unregister command for users with manage roles
 - [ ] check command to see if blacklisted
 - [ ] Clear blacklist table on guild exist
 

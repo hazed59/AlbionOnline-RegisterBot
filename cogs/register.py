@@ -159,25 +159,6 @@ class RegisterCog(commands.Cog, name="Register Command"):
                                 await ctx.send(embed=embebInfo)
                                 pass
 
-                            # Guardar la ID de la guild
-                            DiscordGuildID = ctx.message.guild.id
-
-                            con = sqlite3.connect(dbName)
-
-                            # Create cursor
-                            cur = con.cursor()
-
-                            memberId = ctx.message.author.id
-                            # Se pone "f" delante para que se reconozca las {} como variables
-                            # Insertar datos en la tabla
-                            cur.execute(f"""INSERT INTO {table_register} (userid, discordGuildIdFK, albionnick) values (?, ?, ?)""", (memberId, DiscordGuildID, username))
-                            
-                            # Guardar cambios
-                            con.commit()
-
-                            # Cerrar conexión
-                            con.close()
-
                             break
                         
                         # INFO - Alliance
@@ -213,22 +194,6 @@ class RegisterCog(commands.Cog, name="Register Command"):
                                 await ctx.send(embed=embebInfo)
                                 pass
 
-                            con = sqlite3.connect(dbName)
-
-                            # Create cursor
-                            cur = con.cursor()
-
-                            memberId = ctx.message.author.id
-                            # Se pone "f" delante para que se reconozca las {} como variables
-                            # Insertar datos en la tabla
-                            cur.execute(f"""INSERT INTO {table_register} (userid, discordGuildIdFK, albionnick) values (?, ?, ?)""", (memberId, DiscordGuildID, username))
-                            
-                            # Guardar cambios
-                            con.commit()
-
-                            # Cerrar conexión
-                            con.close()
-
                             break
 
                         # Si no existe un jugador con ese nombre, puede que sea incompleto o existan varios, pero no coincide ninguno
@@ -239,7 +204,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                                 embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
                                 # Mensaje embebido avisando
                                 await ctx.send(embed=embebNotFound)
-                                break
+                                return
                 
                 # No existe ningún jugador con ese nombre, NO devuelve resultados la lista
                 else:
@@ -249,6 +214,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                     embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
                     # Mensaje embebido avisando
                     await ctx.send(embed=embebNotFound)
+                    return
             
             # La API no está disponible
             else:
@@ -263,6 +229,26 @@ class RegisterCog(commands.Cog, name="Register Command"):
                 dt_string = now.strftime("%d/%m/%Y | %H:%M:%S")
 
                 print("{} - API Error {}".format(dt_string, response.status_code))
+                return
+
+        # Guardar la ID de la guild
+        DiscordGuildID = ctx.message.guild.id
+
+        con = sqlite3.connect(dbName)
+
+        # Create cursor
+        cur = con.cursor()
+
+        memberId = ctx.message.author.id
+        # Se pone "f" delante para que se reconozca las {} como variables
+        # Insertar datos en la tabla
+        cur.execute(f"""INSERT INTO {table_register} (userid, discordGuildIdFK, albionnick) values (?, ?, ?)""", (memberId, DiscordGuildID, username))
+        
+        # Guardar cambios
+        con.commit()
+
+        # Cerrar conexión
+        con.close()
 
     @register.error
     async def on_command_error(self, ctx, error):
