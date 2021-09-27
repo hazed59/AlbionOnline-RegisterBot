@@ -40,7 +40,7 @@ class forceUnregisterCog(commands.Cog, name="forceunregister Command"):
 
         con.close()
 
-        ctx.send("Usuario **{}** eliminado de la blacklist".format(username))
+        await ctx.send("Usuario **{}** eliminado de la blacklist".format(user))
 
     @forceunregister.error
     async def on_command_error(self, ctx, error):

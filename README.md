@@ -50,6 +50,8 @@ python main.py
   - [X] Store users in guild database
   - [X] Update sql SELECT to get data from GUILD instead of return every value and get first
   - [X] Check if user its on blacklist
+- forceUnregister command
+  - [X] Initial release
 - Blacklist
   - [X] blacklist command with reason
   - [X] Check if user its already banned
@@ -83,8 +85,6 @@ python main.py
 
 ### TODO First
 
-- forceUnregister command
-  - [ ] Initial release
 - [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
 - [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
 
