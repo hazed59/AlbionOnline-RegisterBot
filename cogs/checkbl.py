@@ -42,8 +42,8 @@ class checkCog(commands.Cog, name="checkbl Command"):
 
         embebCheckGuild = discord.Embed(title="Blacklist", color=0xFFA500)
         embebCheckGuild.add_field(name="Usuario", value="{}".format(username), inline=True)
-        embebCheckGuild.add_field(name="Razón", value="{}".format(checkReason), inline=True)
         embebCheckGuild.add_field(name="Fecha", value="{}".format(checkDate), inline=True)
+        embebCheckGuild.add_field(name="Razón", value="{}".format(checkReason), inline=False)
         embebCheckGuild.add_field(name="Blacklisteado por", value="{} - {}".format(checkAuthorNick, checkMention), inline=True)
         embebCheckGuild.set_footer(text="Bot creado por: QueenMirna#9103")
         # Mensaje embebido avisando
