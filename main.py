@@ -3,6 +3,7 @@ import discord
 import sqlite3
 from dotenv import load_dotenv
 from nextcord.ext import commands
+from discord.ext.commands import CommandNotFound
 import sys, traceback
 
 # Load env variables file
@@ -114,6 +115,13 @@ async def on_guild_remove(guild):
     con.commit()
 
     con.close()
+
+# Catch command not found
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    raise error
 
 # Below cogs represents our folder our cogs are in. Following is the file name. So 'setup.py' in cogs, would be cogs.setup
 # Think of it like a dot path import
