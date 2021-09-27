@@ -106,7 +106,7 @@ async def on_guild_remove(guild):
 
     cur.execute(f"""DELETE FROM {table_config} where discordGuildId={DiscordGuildID}""")
 
-    cur.execute(f"""DROP FROM {table_register} where discordGuildIdFK={DiscordGuildID}""")
+    cur.execute(f"""DELETE FROM {table_register} where discordGuildIdFK={DiscordGuildID}""")
              
     # Guardar cambios
     con.commit()
