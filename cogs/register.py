@@ -37,7 +37,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
         DiscordGuildID = ctx.message.guild.id
 
         try:
-            checkUser = cur.execute(f"""SELECT userid FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
+            checkUser = cur.execute(f"""SELECT userid FROM {table_register} where userid='{memberId}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()[0][0]
         except (IndexError, sqlite3.OperationalError):
             checkUser = False
             pass
@@ -61,7 +61,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
             return
 
         if checkUser:
-            checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
+            checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} WHERE userid='{memberId}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()[0][0]
 
             embebInfo = discord.Embed(title="Ya estás registrado", color=0xff0000)
             embebInfo.add_field(name="Registrado con el usuario", value="{}".format(checkNick), inline=False)

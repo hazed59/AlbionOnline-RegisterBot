@@ -124,7 +124,7 @@ initial_extensions = [
                     'cogs.blacklist',
                     'cogs.unblacklist',
                     'cogs.utc',
-                    'cogs.check'
+                    'cogs.checkbl'
                     ]
 
 # Here we load our extensions(cogs) listed above in [initial_extensions].

@@ -32,13 +32,13 @@ class UnregisterCog(commands.Cog, name="Unregister Command"):
 
         DiscordGuildID = ctx.message.guild.id
 
-        checkUser = cur.execute(f"""SELECT userid FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()
+        checkUser = cur.execute(f"""SELECT userid FROM {table_register} WHERE userid='{memberId}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
 
         if len(checkUser) > 0:
 
-            checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""").fetchall()[0][0]
+            checkNick = cur.execute(f"""SELECT albionnick FROM {table_register} WHERE userid='{memberId}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()[0][0]
 
-            cur.execute(f"""DELETE FROM {table_register} where userid={memberId} AND discordGuildIdFK={DiscordGuildID}""")
+            cur.execute(f"""DELETE FROM {table_register} WHERE userid='{memberId}' AND discordGuildIdFK='{DiscordGuildID}'""")
 
             embebInfo = discord.Embed(title="Registro eliminado", color=0xff0000)
             embebInfo.add_field(name="Eliminado tu nick asociado", value="{}".format(checkNick), inline=False)

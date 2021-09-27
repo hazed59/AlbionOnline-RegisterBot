@@ -52,9 +52,14 @@ python main.py
   - [X] Check if user its on blacklist
 - Blacklist
   - [X] blacklist command with reason
+  - [X] Check if user its already banned
+  - [X] Add Date in database
+  - [X] Add user who banned him
 - Unblacklist
   - [X] unblacklist (Only for manage rol users)
   - [X] Register command
+- checkbl
+  - [X] Initial release
 - UTC
   - [X] Print UTC hour
 - General
@@ -63,26 +68,22 @@ python main.py
   - [X] Custom bot prefix
   - [X] Ignore DMs
   - [X] Split commands into files
-
 - Database
   - [X] Create Database and table
   - [X] Clear guild in database on bot exist
   - [X] Fix alliance query on users table
   - [X] Fix clear users when bot leaves guild
   - [X] Clear blacklist table on guild exist
+  - [X] Add fields to blacklist
+    - [X] Date
+    - [X] User who blacklist him
 
 ### TODO First
 
 - [ ] Unregister command for users with manage roles
-- [ ] check command to see if blacklisted
-- Blacklist
-  - [ ] Check if user its already banned and give the info
-  - [ ] Add Date in database
-  - [ ] Add user who banned him
+
 - Database
-  - [ ] Add fields to blacklist
-    - [ ] Date
-    - [ ] User who blacklist him
+
 
 ### TODO Later
 
