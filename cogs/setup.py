@@ -107,8 +107,8 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                         guildResponse = False
                 else:
                     # Mensaje embebido
-                    embebErrorGuild = discord.Embed(title="ID de guild no encontrado", color=0xFF0000)
-                    embebErrorGuild.add_field(name="Info:", value="Comprueba que el ID de la guild es: {}".format(guildId), inline=False)
+                    embebErrorGuild = discord.Embed(title="Error", color=0xFF0000)
+                    embebErrorGuild.add_field(name="Info:", value="ID de guild no encontrado, comprueba que el ID de la guild es: {}".format(guildId), inline=False)
                     embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
                     # Mensaje embebido avisando
                     await ctx.send(embed=embebErrorGuild)
@@ -231,8 +231,8 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                                 allianceResponse = False
                         else:
                             # Mensaje embebido
-                            embebErrorGuild = discord.Embed(title="ID de alianza no encontrado", color=0xFF0000)
-                            embebErrorGuild.add_field(name="Info:", value="Comprueba que el ID de la alianza es: {}".format(allianceId), inline=False)
+                            embebErrorGuild = discord.Embed(title="Error", color=0xFF0000)
+                            embebErrorGuild.add_field(name="Info:", value="ID de alianza no encontrado, comprueba que el ID de la alianza es: {}".format(allianceId), inline=False)
                             embebErrorGuild.set_footer(text="Bot creado por: QueenMirna#9103")
                             # Mensaje embebido avisando
                             await ctx.send(embed=embebErrorGuild)

@@ -104,7 +104,7 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
         else:
             
             embebBlacklistInfo = discord.Embed(title="Error", color=0x00ff00)
-            embebBlacklistInfo.add_field(name="Ya está en la blacklist", value="{}".format(albionNick), inline=False)
+            embebBlacklistInfo.add_field(name="Info:", value="{}, ya está en la blacklist".format(albionNick), inline=False)
             embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebBlacklistInfo)

@@ -44,7 +44,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
             reason = cur.execute(f"""SELECT reason FROM {table_blacklist} WHERE albionNick='{username}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()[0][0]
 
             embebBlacklistInfo = discord.Embed(title="Usuario blacklisteado", color=0xFF0000)
-            embebBlacklistInfo.add_field(name="Usuario:", value="{}".format(username), inline=False)
+            embebBlacklistInfo.add_field(name="Usuario:", value="{}".format(user), inline=False)
             embebBlacklistInfo.add_field(name="Razón:", value="{}".format(reason), inline=False)
             embebBlacklistInfo.add_field(name="Info:", value="Si crees que es un error, contacta con un oficial.", inline=False)
             embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -82,7 +82,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
             checkRegisteredUserId = cur.execute(f"""SELECT userId FROM {table_register} WHERE albionNick='{username}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()[0][0]
 
             embebRegisteredInfo = discord.Embed(title="Error", color=0xFF0000)
-            embebRegisteredInfo.add_field(name="Usuario ya registrado:", value="{}".format(username), inline=False)
+            embebRegisteredInfo.add_field(name="Usuario ya registrado:", value="{}".format(user), inline=False)
             embebRegisteredInfo.add_field(name="Registrado por:", value="<@{}>".format(checkRegisteredUserId), inline=False)
             embebRegisteredInfo.add_field(name="Info:", value="Si crees que es un error, contacta con un oficial.", inline=False)
             embebRegisteredInfo.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -112,7 +112,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
         member = ctx.message.author
 
         embebInfo = discord.Embed(title="Procesando búsqueda", color=0xFFA500)
-        embebInfo.add_field(name="Buscando a:", value="{}".format(username), inline=False)
+        embebInfo.add_field(name="Buscando a:", value="{}".format(user), inline=False)
         embebInfo.add_field(name="Tiempo estimado", value="5 minutos", inline=False)
         embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
         # Mensaje embebido avisando
@@ -140,7 +140,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                         # Mensaje embebido
                         embebFindGuild = discord.Embed(title="Jugador encontrado", color=0x00ff00)
-                        embebFindGuild.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
+                        embebFindGuild.add_field(name="Bievenid@:", value="{}".format(user), inline=False)
                         embebFindGuild.add_field(name="Rol asignado:", value="{}".format(registerGuildRol), inline=False)
                         embebFindGuild.add_field(name="Nick actualizado a:", value="[{}] {}".format(registerGuildTag ,player['Name']), inline=False)
                         embebFindGuild.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -154,8 +154,8 @@ class RegisterCog(commands.Cog, name="Register Command"):
                             await member.add_roles(role)
 
                         except nextcord.errors.Forbidden:
-                            embebPermissionError = discord.Embed(title="Error de permisos", color=0xff0000)
-                            embebPermissionError.add_field(name="Permisos faltantes", value="***Manage rol***, si eres un admin puede ser que el bot no tenga permisos para asignar roles o que el rol de bot esté por debajo de los roles a asignar, asegurate que está por encima de los roles que quieres asignar")
+                            embebPermissionError = discord.Embed(title="Error", color=0xff0000)
+                            embebPermissionError.add_field(name="Info", value="Permisos falantes, **Manage rol**, si eres un admin puede ser que el bot no tenga permisos para asignar roles o que el rol de bot esté por debajo de los roles a asignar, asegurate que está por encima de los roles que quieres asignar")
                             embebPermissionError.set_footer(text="Bot creado por: QueenMirna#9103")
 
                             # Mensaje embebido avisando
@@ -167,7 +167,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                             await member.edit(nick="[{}] {}".format(registerGuildTag ,player['Name']))
                         except nextcord.errors.Forbidden:
                             embebInfo = discord.Embed(title="Error de permisos", color=0xff0000)
-                            embebInfo.add_field(name="Permisos faltantes", value="***Manage Nicknames***, si eres un admin puede ser que el bot no tenga permisos de editar nicks a admins, pero si a usuarios básicos", inline=False)
+                            embebInfo.add_field(name="Permisos faltantes", value="Permisos faltantes, **Manage Nicknames**, si eres un admin puede ser que el bot no tenga permisos de editar nicks a admins, pero si a usuarios básicos.", inline=False)
                             embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
 
                             # Mensaje embebido avisando
@@ -185,7 +185,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                         # Mensaje embebido
                         embebFindAlliance = discord.Embed(title="Jugador encontrado", color=0x8c004b)
-                        embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(username), inline=False)
+                        embebFindAlliance.add_field(name="Bievenid@:", value="{}".format(user), inline=False)
                         embebFindAlliance.add_field(name="Rol asignado:", value="{}".format(registerAllianceRol), inline=False)
                         embebFindAlliance.add_field(name="Nick actualizado a:", value="[{}] [{}] {}".format(registerAllianceTag, registerAllianceGuildTagFirstChars,player['Name']), inline=False)
                         embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
@@ -193,16 +193,25 @@ class RegisterCog(commands.Cog, name="Register Command"):
                         await ctx.send(embed=embebFindAlliance)
 
                         # Asignar rol
-                        DiscordGuildID = self.bot.get_guild(ctx.message.guild.id)
-                        role = discord.utils.get(DiscordGuildID.roles, name="{}".format(registerAllianceRol))
-                        await member.add_roles(role)
+                        try:
+                            DiscordGuildID = self.bot.get_guild(ctx.message.guild.id)
+                            role = discord.utils.get(DiscordGuildID.roles, name="{}".format(registerAllianceRol))
+                            await member.add_roles(role)
+
+                        except nextcord.errors.Forbidden:
+                            embebPermissionError = discord.Embed(title="Error", color=0xff0000)
+                            embebPermissionError.add_field(name="Info", value="Permisos falantes, **Manage rol**, si eres un admin puede ser que el bot no tenga permisos para asignar roles o que el rol de bot esté por debajo de los roles a asignar, asegurate que está por encima de los roles que quieres asignar")
+                            embebPermissionError.set_footer(text="Bot creado por: QueenMirna#9103")
+
+                            # Mensaje embebido avisando
+                            await ctx.send(embed=embebPermissionError)
 
                         # Cambiar nombre
                         try:
                             await member.edit(nick="[{}] [{}] {}".format(registerAllianceTag, registerAllianceGuildTagFirstChars.upper(), player['Name']))
                         except nextcord.errors.Forbidden:
-                            embebInfo = discord.Embed(title="Error de permisos", color=0xff0000)
-                            embebInfo.add_field(name="Permisos faltantes", value="Manage Nicknames, si eres un admin puede ser que el bot no tenga permisos de editar nicks a admins, pero si a usuarios básicos", inline=False)
+                            embebInfo = discord.Embed(title="Error", color=0xff0000)
+                            embebInfo.add_field(name="Info", value="Permisos faltantes, **Manage Nicknames**, si eres un admin puede ser que el bot no tenga permisos de editar nicks a admins, pero si a usuarios básicos.", inline=False)
                             embebInfo.set_footer(text="Bot creado por: QueenMirna#9103")
 
                             # Mensaje embebido avisando
@@ -214,8 +223,8 @@ class RegisterCog(commands.Cog, name="Register Command"):
                     # Si no existe un jugador con ese nombre, puede que sea incompleto o existan varios, pero no coincide ninguno
                     if not exist:
                             # Mensaje embebido
-                            embebNotFound = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
-                            embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(username), inline=False)
+                            embebNotFound = discord.Embed(title="Error", color=0xFF0000)
+                            embebNotFound.add_field(name="Info:", value="{} no ha sido encontrado\nSi crees que es un error contacta con un oficial".format(user), inline=False)
                             embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
                             # Mensaje embebido avisando
                             await ctx.send(embed=embebNotFound)
@@ -224,8 +233,8 @@ class RegisterCog(commands.Cog, name="Register Command"):
             # No existe ningún jugador con ese nombre, NO devuelve resultados la lista
             else:
                 # Mensaje embebido
-                embebNotFound = discord.Embed(title="Jugador no encontrado", color=0xFF0000)
-                embebNotFound.add_field(name="El jugador:", value="{}\nSi crees que es un error contacta con un oficial".format(username), inline=False)
+                embebNotFound = discord.Embed(title="Error", color=0xFF0000)
+                embebNotFound.add_field(name="Info:", value="{} no ha sido encontrado.\nSi crees que es un error contacta con un oficial".format(username), inline=False)
                 embebNotFound.set_footer(text="Bot creado por: QueenMirna#9103")
                 # Mensaje embebido avisando
                 await ctx.send(embed=embebNotFound)
@@ -234,8 +243,8 @@ class RegisterCog(commands.Cog, name="Register Command"):
         # La API no está disponible
         else:
             # Mensaje embebido
-            embebFindAlliance = discord.Embed(title="Error al procesar la solicitud", color=0xFF0000)
-            embebFindAlliance.add_field(name="Info:", value="Inténtalo de nuevo", inline=False)
+            embebFindAlliance = discord.Embed(title="Error", color=0xFF0000)
+            embebFindAlliance.add_field(name="Info:", value="Ha ocurrido un error al procesar tu solicitud, inténtalo de nuevo", inline=False)
             embebFindAlliance.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebFindAlliance)

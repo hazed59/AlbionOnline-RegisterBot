@@ -65,7 +65,7 @@ class UnBlacklistCog(commands.Cog, name="Unblacklist Command"):
 
         if checkUser == []:
             embebBlacklistInfo = discord.Embed(title="Error", color=0xFF0000)
-            embebBlacklistInfo.add_field(name="Usuario no encontrado:", value="{}".format(albionNickLower), inline=False)
+            embebBlacklistInfo.add_field(name="Info", value="Usuario {}, no encontrado.".format(albionNickLower), inline=False)
             embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebBlacklistInfo)
