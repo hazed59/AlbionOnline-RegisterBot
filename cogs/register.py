@@ -75,7 +75,6 @@ class RegisterCog(commands.Cog, name="Register Command"):
             return
 
         checkRegistered = cur.execute(f"""SELECT * FROM {table_register} WHERE albionNick='{username}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
-        print(checkRegistered)
 
         if checkRegistered != []:
 

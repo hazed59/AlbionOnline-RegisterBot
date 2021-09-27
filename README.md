@@ -50,6 +50,8 @@ python main.py
   - [X] Store users in guild database
   - [X] Update sql SELECT to get data from GUILD instead of return every value and get first
   - [X] Check if user its on blacklist
+- forceUnregister command
+  - [X] Initial release
 - Blacklist
   - [X] blacklist command with reason
   - [X] Check if user its already banned
@@ -68,6 +70,7 @@ python main.py
   - [X] Custom bot prefix
   - [X] Ignore DMs
   - [X] Split commands into files
+  - [X] Improve/Reorder register checks remove from if/else to be more "modular"
 - Database
   - [X] Create Database and table
   - [X] Clear guild in database on bot exist
@@ -80,14 +83,8 @@ python main.py
 
 ### TODO First
 
-- [ ] Unregister command for users with manage roles
-
-- Database
-
-
 ### TODO Later
 
-- [ ] Improve/Reorder register checks remove from if/else to be more "modular"
 - [ ] addGuild command
   - [ ] Add Guild to exit field (separator a ',')
 - [ ] addAlliance command
