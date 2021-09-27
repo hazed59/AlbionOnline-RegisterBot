@@ -83,6 +83,11 @@ python main.py
 
 ### TODO First
 
+- blacklist command
+  - [ ] Saver nicks in lowercase in database
+- unblacklist command
+  - [ ] Transform nicks to lowercase
+
 ### TODO Later
 
 - [ ] addGuild command
@@ -92,6 +97,6 @@ python main.py
 - [ ] Register command
   - [ ] Check from all guilds/alliances (separator a ',')
 
-- [ ] Send query to guild and save all members every X minutes, avoiding spamming the API
+- [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
 - [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
 - [ ] Auto-clean commands and users messages
