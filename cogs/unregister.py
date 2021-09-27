@@ -20,9 +20,7 @@ class UnregisterCog(commands.Cog, name="Unregister Command"):
         brief="Unregister user on the guild.",
         help="Unregister user on the guild.\nExameple: !unregister",
     )
-    @commands.has_permissions(
-                              manage_roles=True
-                              )
+
     async def unregister(self, ctx):
 
         memberId = ctx.message.author.id
