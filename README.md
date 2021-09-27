@@ -79,7 +79,6 @@ python main.py
 ### TODO Later
 
 - [ ] Improve/Reorder register checks remove from if/else to be more "modular"
-
 - [ ] addGuild command
   - [ ] Add Guild to exit field (separator a ',')
 - [ ] addAlliance command
