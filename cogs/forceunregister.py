@@ -11,7 +11,7 @@ dbName = os.environ.get("DBNAME")
 table_config = os.environ.get("TABLE_CONFIG")
 table_register = os.environ.get("TABLE_USER")
 table_blacklist = os.environ.get("TABLE_BLACKLIST")
-class forceUnregisterCog(commands.Cog, name="checkbl Command"):
+class forceUnregisterCog(commands.Cog, name="forceunregister Command"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -23,7 +23,7 @@ class forceUnregisterCog(commands.Cog, name="checkbl Command"):
     @commands.has_permissions(
                               manage_roles=True
                               )
-    async def forceUnregister(self, ctx, user):
+    async def forceunregister(self, ctx, user):
 
         username = user.lower()
 
@@ -42,7 +42,7 @@ class forceUnregisterCog(commands.Cog, name="checkbl Command"):
 
         ctx.send("Usuario **{}** eliminado de la blacklist".format(username))
 
-    @forceUnregister.error
+    @forceunregister.error
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embebforceUnregisterError = discord.Embed(title="Error", color=0xFF0000)

@@ -116,10 +116,12 @@ async def on_guild_remove(guild):
 
     con.close()
 
-# Catch command not found
+# Catch command not found and missing arguments for commands that doesnt have
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
+        return
+    if isinstance(error, commands.MissingRequiredArgument):
         return
     raise error
 
@@ -132,7 +134,8 @@ initial_extensions = [
                     'cogs.blacklist',
                     'cogs.unblacklist',
                     'cogs.utc',
-                    'cogs.checkbl'
+                    'cogs.checkbl',
+                    'cogs.forceunregister'
                     ]
 
 # Here we load our extensions(cogs) listed above in [initial_extensions].
