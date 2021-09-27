@@ -23,7 +23,9 @@ class forceUnregisterCog(commands.Cog, name="checkbl Command"):
     @commands.has_permissions(
                               manage_roles=True
                               )
-    async def forceUnregister(self, ctx, username):
+    async def forceUnregister(self, ctx, user):
+
+        username = user.lower()
 
         DiscordGuildID = ctx.guild.id
 

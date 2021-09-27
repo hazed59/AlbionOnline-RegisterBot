@@ -54,6 +54,7 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
 
         if botPrefixResponse:
             albionNick = msg.content
+            albionNickLower = albionNick.lower()
         else:
             return
 
@@ -85,7 +86,7 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
 
         cur = con.cursor()
 
-        checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
+        checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNickLower}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
 
         date = datetime.now(timezone.utc).strftime("%d/%m/%Y")
         authorId = ctx.author.mention
@@ -99,7 +100,7 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
                 date,
                 authorId,
                 authorNick)
-                VALUES (?, ?, ?, ?, ?, ?)""", (DiscordGuildID, albionNick, reason, date, authorId, authorNick))
+                VALUES (?, ?, ?, ?, ?, ?)""", (DiscordGuildID, albionNickLower, reason, date, authorId, authorNick))
         else:
             
             embebBlacklistInfo = discord.Embed(title="Error", color=0x00ff00)
@@ -107,6 +108,9 @@ class BlacklistCog(commands.Cog, name="Blacklist Command"):
             embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebBlacklistInfo)
+            con.close()
+            return
+
         
         con.commit()
 

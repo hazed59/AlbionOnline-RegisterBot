@@ -27,9 +27,10 @@ class RegisterCog(commands.Cog, name="Register Command"):
         brief="Register user on the guild.",
         help="Register your user.\nExameple: !register QueenMirna"
     )
-    async def register(self, ctx, username):
+    async def register(self, ctx, user):
 
         memberId = ctx.message.author.id
+        username = user.lower()
         con = sqlite3.connect(dbName)
 
         cur = con.cursor()
@@ -134,7 +135,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                     
                     # INFO - Guild
                     # Si player es igual al nombre del jugador pasado devolver datos
-                    if player['Name'].lower() == username.lower() and player["GuildId"] == registerGuildId:
+                    if player['Name'].lower() == username and player["GuildId"] == registerGuildId:
                         exist = True
 
                         # Mensaje embebido
@@ -176,7 +177,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
                         break
                     
                     # INFO - Alliance
-                    if player['Name'].lower() == username.lower() and player["AllianceId"] == registerAllianceId:
+                    if player['Name'].lower() == username and player["AllianceId"] == registerAllianceId:
                         exist = True
 
                         registerAllianceGuildTag = player['GuildName']

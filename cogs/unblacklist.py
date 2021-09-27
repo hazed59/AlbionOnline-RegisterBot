@@ -53,6 +53,7 @@ class UnBlacklistCog(commands.Cog, name="Unblacklist Command"):
 
         if botPrefixResponse:
             albionNick = msg.content
+            albionNickLower = albionNick.lower()
         else:
             return
 
@@ -60,11 +61,11 @@ class UnBlacklistCog(commands.Cog, name="Unblacklist Command"):
 
         cur = con.cursor()
 
-        checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
+        checkUser = cur.execute(f"""SELECT * FROM {table_blacklist} WHERE albionNick='{albionNickLower}' AND discordGuildIdFK='{DiscordGuildID}'""").fetchall()
 
         if checkUser == []:
             embebBlacklistInfo = discord.Embed(title="Error", color=0xFF0000)
-            embebBlacklistInfo.add_field(name="Usuario no encontrado:", value="{}".format(albionNick), inline=False)
+            embebBlacklistInfo.add_field(name="Usuario no encontrado:", value="{}".format(albionNickLower), inline=False)
             embebBlacklistInfo.set_footer(text="Bot creado por: QueenMirna#9103")
             # Mensaje embebido avisando
             await ctx.send(embed=embebBlacklistInfo)
@@ -74,7 +75,7 @@ class UnBlacklistCog(commands.Cog, name="Unblacklist Command"):
             return
         else:
             cur.execute(f"""DELETE FROM {table_blacklist} 
-                WHERE albionNick='{albionNick}' AND discordGuildIdFK='{DiscordGuildID}'""")
+                WHERE albionNick='{albionNickLower}' AND discordGuildIdFK='{DiscordGuildID}'""")
         
         con.commit()
 

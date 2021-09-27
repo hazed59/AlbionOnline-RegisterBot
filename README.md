@@ -71,6 +71,7 @@ python main.py
   - [X] Ignore DMs
   - [X] Split commands into files
   - [X] Improve/Reorder register checks remove from if/else to be more "modular"
+  - [X] Catch command not found
 - Database
   - [X] Create Database and table
   - [X] Clear guild in database on bot exist
@@ -80,13 +81,12 @@ python main.py
   - [X] Add fields to blacklist
     - [X] Date
     - [X] User who blacklist him
+  - [X] Save nicks as lower to improve match even with upper case letters
 
 ### TODO First
 
-- blacklist command
-  - [ ] Saver nicks in lowercase in database
-- unblacklist command
-  - [ ] Transform nicks to lowercase
+- [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
+- [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
 
 ### TODO Later
 
@@ -96,7 +96,4 @@ python main.py
   - [ ] Add Alliance to exit field (separator a ',')
 - [ ] Register command
   - [ ] Check from all guilds/alliances (separator a ',')
-
-- [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
-- [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
 - [ ] Auto-clean commands and users messages

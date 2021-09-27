@@ -20,9 +20,10 @@ class checkCog(commands.Cog, name="checkbl Command"):
         brief="Get user info",
         help="Get user blacklist info (blacklist reason, date, and user who blacklist him).\nExameple: !checkbl QueenMirna",
     )
-    async def checkbl(self, ctx, username):
+    async def checkbl(self, ctx, nick):
 
         DiscordGuildID = ctx.message.guild.id
+        username = nick.lower()
 
         con = sqlite3.connect('{}'.format(dbName))
 
