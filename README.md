@@ -85,16 +85,19 @@ python main.py
 
 ### TODO First
 
+- [ ] On setup store guild users on database and check database on register first
+- [ ] Dont wait other commands to execute code
 - [ ] Fix alliance check if registered
+
+### TODO Later
+
 - [ ] Aliases add commands with capital letter
 - [ ] If blacklisted remove role
+- [ ] Add retry to API request <https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/>
 - [ ] addAlliance command
   - [ ] Add Alliance to exit field (separator a ',')
 - [ ] Register command
   - [ ] Check from all alliances (separator a ',')
-
-### TODO Later
-
 - [ ] addGuild command
   - [ ] Add Guild to exit field (separator a ',')
 - [ ] Auto-clean commands and users messages
