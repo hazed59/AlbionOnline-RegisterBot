@@ -120,8 +120,9 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
         # Petición a la url, y guarda la respuesta
         # API que se usará, con parametrización del usuario
-        url = 'https://gameinfo.albiononline.com/api/gameinfo/search?q={}'.format(username)
-        response = requests.get(url)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0'}
+        playerUrl = 'https://gameinfo.albiononline.com/api/gameinfo/search?q={}'.format(username)
+        response = requests.get(playerUrl, headers=headers)
 
         if response.status_code == 200:
             # Transforma la info en texto plano a json

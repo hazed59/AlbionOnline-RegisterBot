@@ -78,7 +78,8 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                 guildId = msg.content
 
                 guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/guilds/{}'.format(guildId)
-                guildResponse = requests.get(guildUrl)
+                headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0'}
+                guildResponse = requests.get(guildUrl, headers=headers)
 
                 if guildResponse.status_code == 200:
                     guild_data_json = json.loads(guildResponse.text)
@@ -200,8 +201,9 @@ class ConfigCog(commands.Cog, name="Config Commands"):
                     if allianceResponse:
                         allianceId = msg.content
 
-                        guildUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceId)
-                        allianceResponse = requests.get(guildUrl)
+                        allianceUrl = 'https://gameinfo.albiononline.com/api/gameinfo/alliances/{}'.format(allianceId)
+                        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0'}
+                        allianceResponse = requests.get(allianceUrl, headers=headers)
 
                         if allianceResponse.status_code == 200:
                             alliance_data_json = json.loads(allianceResponse.text)
