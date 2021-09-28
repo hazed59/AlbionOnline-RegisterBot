@@ -161,6 +161,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                             # Mensaje embebido avisando
                             await ctx.send(embed=embebPermissionError)
+                            pass
                             
 
                         # Cambiar nombre
@@ -206,6 +207,7 @@ class RegisterCog(commands.Cog, name="Register Command"):
 
                             # Mensaje embebido avisando
                             await ctx.send(embed=embebPermissionError)
+                            pass
 
                         # Cambiar nombre
                         try:
