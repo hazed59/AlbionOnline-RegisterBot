@@ -85,16 +85,19 @@ python main.py
 
 ### TODO First
 
-- [ ] Language support
-- [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
-- [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
+- [ ] Fix alliance check if registered
+- [ ] Aliases add commands with capital letter
+- [ ] If blacklisted remove role
+- [ ] addAlliance command
+  - [ ] Add Alliance to exit field (separator a ',')
+- [ ] Register command
+  - [ ] Check from all alliances (separator a ',')
 
 ### TODO Later
 
 - [ ] addGuild command
   - [ ] Add Guild to exit field (separator a ',')
-- [ ] addAlliance command
-  - [ ] Add Alliance to exit field (separator a ',')
-- [ ] Register command
-  - [ ] Check from all guilds/alliances (separator a ',')
 - [ ] Auto-clean commands and users messages
+- [ ] Send query to guild and save all members every 6 hours, avoiding spamming the API
+- [ ] Cleanup users every day if they arent on the guild or alliance and remove from database
+- [ ] Language support
