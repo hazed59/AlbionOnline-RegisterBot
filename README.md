@@ -77,6 +77,7 @@ python main.py
   - [X] Clear guild in database on bot exist
   - [X] Fix alliance query on users table
   - [X] Fix clear users when bot leaves guild
+    - [X] Fixed order when deleting
   - [X] Clear blacklist table on guild exist
   - [X] Add fields to blacklist
     - [X] Date
@@ -87,7 +88,7 @@ python main.py
 
 - [ ] On setup store guild users on database and check database on register first
 - [ ] Dont wait other commands to execute code
-- [ ] Fix alliance check if registered
+- [ ] Fix alliance check if registered, only when already registered in another guild
 
 ### TODO Later
 
