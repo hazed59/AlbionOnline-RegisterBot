@@ -12,7 +12,7 @@ class utcCog(commands.Cog, name="utc Command"):
         help="Get UTC time.\nExameple: !utc",
     )
     async def utc(self, ctx):
-      
+
         now_utc = datetime.now(timezone.utc).strftime("%H:%M:%S")
 
         utcTime = discord.Embed(description="⏰ UTC time now: {}".format(now_utc))

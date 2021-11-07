@@ -18,7 +18,7 @@ table_blacklist = os.environ.get("TABLE_BLACKLIST")
 class ConfigCog(commands.Cog, name="Config Commands"):
     def __init__(self, bot):
         self.bot = bot
-      
+
     @commands.command(
         name='setup',
         pass_context=True,
@@ -27,8 +27,8 @@ class ConfigCog(commands.Cog, name="Config Commands"):
     )
     # Check if have admin perms
     @commands.has_permissions(
-                              administrator=True
-                              )
+        administrator=True
+        )
     async def setup(self, ctx):
         # Guardar la ID de la guild
         DiscordGuildID = ctx.message.guild.id
